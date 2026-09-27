@@ -12,11 +12,11 @@ export type EventRow = {
 }
 
 export const tagColors: Record<string, string> = {
-  Conference: 'bg-green-main/10 text-green-dark',
+  Conference: 'bg-brand-main/10 text-brand-dark',
   'Special Service': 'bg-gold/10 text-gold-dark',
-  Celebration: 'bg-green-pale text-green-dark',
+  Celebration: 'bg-brand-pale text-brand-dark',
   Outreach: 'bg-orange-50 text-orange-700',
-  Youth: 'bg-blue-50 text-blue-700',
+  Youth: 'bg-gold-light/30 text-gold-dark',
 }
 
 /** Break a YYYY-MM-DD string into the day / month / year used by the date block. */

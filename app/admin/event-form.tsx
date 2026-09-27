@@ -15,7 +15,7 @@ function SubmitButton() {
   )
 }
 
-const inputStyle = { borderColor: 'rgba(26,92,42,0.2)', color: '#1a3a24' } as const
+const inputStyle = { borderColor: 'rgba(150,112,15,0.2)', color: '#2b2620' } as const
 const inputClass = 'w-full px-4 py-2.5 rounded-lg border outline-none focus:ring-2'
 
 export default function EventForm() {
@@ -32,31 +32,31 @@ export default function EventForm() {
     >
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-bold mb-1" style={{ color: 'var(--green-dark)' }}>
+          <label className="block text-xs font-bold mb-1" style={{ color: 'var(--brand-dark)' }}>
             Title *
           </label>
           <input name="title" required placeholder="e.g. Youth Camp 2026" className={inputClass} style={inputStyle} />
         </div>
         <div>
-          <label className="block text-xs font-bold mb-1" style={{ color: 'var(--green-dark)' }}>
+          <label className="block text-xs font-bold mb-1" style={{ color: 'var(--brand-dark)' }}>
             Date *
           </label>
           <input type="date" name="event_date" required className={inputClass} style={inputStyle} />
         </div>
         <div>
-          <label className="block text-xs font-bold mb-1" style={{ color: 'var(--green-dark)' }}>
+          <label className="block text-xs font-bold mb-1" style={{ color: 'var(--brand-dark)' }}>
             Location
           </label>
           <input name="location" placeholder="e.g. GPM Main Auditorium" className={inputClass} style={inputStyle} />
         </div>
         <div>
-          <label className="block text-xs font-bold mb-1" style={{ color: 'var(--green-dark)' }}>
+          <label className="block text-xs font-bold mb-1" style={{ color: 'var(--brand-dark)' }}>
             Time
           </label>
           <input name="time" placeholder="e.g. 9:00 AM – 6:00 PM" className={inputClass} style={inputStyle} />
         </div>
         <div>
-          <label className="block text-xs font-bold mb-1" style={{ color: 'var(--green-dark)' }}>
+          <label className="block text-xs font-bold mb-1" style={{ color: 'var(--brand-dark)' }}>
             Category
           </label>
           <select name="tag" defaultValue="Conference" className={inputClass} style={inputStyle}>
@@ -68,19 +68,19 @@ export default function EventForm() {
           </select>
         </div>
         <div>
-          <label className="block text-xs font-bold mb-1" style={{ color: 'var(--green-dark)' }}>
+          <label className="block text-xs font-bold mb-1" style={{ color: 'var(--brand-dark)' }}>
             Photo / Flyer (optional)
           </label>
           <input
             type="file"
             name="image"
             accept="image/*"
-            className="w-full text-sm file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-green-pale file:text-green-dark file:font-semibold"
+            className="w-full text-sm file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-brand-pale file:text-brand-dark file:font-semibold"
           />
         </div>
       </div>
       <div>
-        <label className="block text-xs font-bold mb-1" style={{ color: 'var(--green-dark)' }}>
+        <label className="block text-xs font-bold mb-1" style={{ color: 'var(--brand-dark)' }}>
           Description
         </label>
         <textarea

@@ -13,6 +13,7 @@ export default function GivePage() {
     paymentMethod: '',
     message: '',
   })
+  const [error, setError] = useState('')
 
   const givingTypes = [
     { id: 'donation', label: 'General Donation', emoji: '❤️' },
@@ -51,13 +52,14 @@ export default function GivePage() {
     e.preventDefault()
     const finalAmount = formData.amount || formData.customAmount
     if (!finalAmount) {
-      alert('Please select or enter an amount')
+      setError('Please select or enter an amount.')
       return
     }
     if (!formData.paymentMethod) {
-      alert('Please select a payment method')
+      setError('Please choose a payment method: Bank Card or Mobile Money.')
       return
     }
+    setError('')
     // Wire up to payment gateway here
     console.log('Form submitted:', formData, 'Final Amount:', finalAmount)
   }
@@ -68,11 +70,11 @@ export default function GivePage() {
     <>
       {/* Header */}
       <section
-        className="relative flex items-center justify-center text-white text-center px-6 py-20"
-        style={{ background: 'linear-gradient(160deg, var(--green-dark) 0%, #2d7a3e 100%)' }}
+        className="relative flex items-center justify-center text-white text-center px-6 py-14 sm:py-20"
+        style={{ background: 'linear-gradient(160deg, var(--brand-dark) 0%, #96700f 100%)' }}
       >
         <div className="relative z-10">
-          <h1 className="font-playfair text-5xl lg:text-6xl font-bold mb-4">Give</h1>
+          <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold mb-4">Give</h1>
           <div className="w-16 h-1 mx-auto" style={{ background: 'var(--gold)' }} />
           <p className="text-white/90 text-lg mt-6 max-w-2xl mx-auto">
             "It is more blessed to give than to receive." - Acts 20:35
@@ -86,18 +88,18 @@ export default function GivePage() {
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
           {/* Form Header */}
           <div
-            className="px-8 py-12 text-white"
-            style={{ background: 'linear-gradient(135deg, var(--green-dark) 0%, #2d7a3e 100%)' }}
+            className="px-5 py-8 sm:px-8 sm:py-12 text-white"
+            style={{ background: 'linear-gradient(135deg, var(--brand-dark) 0%, #96700f 100%)' }}
           >
-            <h2 className="font-playfair text-3xl font-bold mb-2">Support Our Ministry</h2>
+            <h2 className="font-heading text-3xl font-bold mb-2">Support Our Ministry</h2>
             <p className="text-white/90">Make a tax-deductible contribution to advance the Kingdom of God</p>
           </div>
 
           {/* Form Content */}
-          <form onSubmit={handleSubmit} className="p-8 lg:p-12 space-y-8">
+          <form onSubmit={handleSubmit} className="p-5 sm:p-8 lg:p-12 space-y-8">
             {/* Personal Information */}
             <div>
-              <h3 className="font-bold text-lg mb-6" style={{ color: 'var(--green-dark)' }}>
+              <h3 className="font-bold text-lg mb-6" style={{ color: 'var(--brand-dark)' }}>
                 Your Information
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -110,7 +112,7 @@ export default function GivePage() {
                     onChange={handleInputChange}
                     required
                     placeholder="John Doe"
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-green-600"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-brand-main"
                   />
                 </div>
                 <div>
@@ -122,7 +124,7 @@ export default function GivePage() {
                     onChange={handleInputChange}
                     required
                     placeholder="john@example.com"
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-green-600"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-brand-main"
                   />
                 </div>
                 <div className="md:col-span-2">
@@ -134,7 +136,7 @@ export default function GivePage() {
                     onChange={handleInputChange}
                     required
                     placeholder="+233 XXX XXX XXX"
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-green-600"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-brand-main"
                   />
                 </div>
               </div>
@@ -142,7 +144,7 @@ export default function GivePage() {
 
             {/* Giving Type */}
             <div>
-              <h3 className="font-bold text-lg mb-6" style={{ color: 'var(--green-dark)' }}>
+              <h3 className="font-bold text-lg mb-6" style={{ color: 'var(--brand-dark)' }}>
                 Type of Giving
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -157,7 +159,7 @@ export default function GivePage() {
                         : 'border-gray-300 text-gray-700 hover:border-gray-400'
                     }`}
                     style={{
-                      background: formData.givingType === type.id ? 'var(--green-dark)' : '#f9faf9',
+                      background: formData.givingType === type.id ? 'var(--brand-dark)' : '#fcfaf5',
                     }}
                   >
                     <span className="text-xl">{type.emoji}</span>
@@ -169,7 +171,7 @@ export default function GivePage() {
 
             {/* Amount Selection */}
             <div>
-              <h3 className="font-bold text-lg mb-6" style={{ color: 'var(--green-dark)' }}>
+              <h3 className="font-bold text-lg mb-6" style={{ color: 'var(--brand-dark)' }}>
                 Donation Amount
               </h3>
 
@@ -188,7 +190,7 @@ export default function GivePage() {
                           : 'text-gray-700 border-gray-300 hover:border-gray-400'
                       }`}
                       style={{
-                        background: formData.amount === amount.toString() ? 'var(--green-dark)' : '#f9faf9',
+                        background: formData.amount === amount.toString() ? 'var(--brand-dark)' : '#fcfaf5',
                       }}
                     >
                       ₵{amount}
@@ -209,7 +211,7 @@ export default function GivePage() {
                     value={formData.customAmount}
                     onChange={handleCustomAmount}
                     min="0"
-                    className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-green-600"
+                    className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-brand-main"
                   />
                 </div>
               </div>
@@ -217,7 +219,7 @@ export default function GivePage() {
 
             {/* Payment Method */}
             <div>
-              <h3 className="font-bold text-lg mb-6" style={{ color: 'var(--green-dark)' }}>
+              <h3 className="font-bold text-lg mb-6" style={{ color: 'var(--brand-dark)' }}>
                 Payment Method *
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -228,14 +230,17 @@ export default function GivePage() {
                   <button
                     key={method.id}
                     type="button"
-                    onClick={() => setFormData((prev) => ({ ...prev, paymentMethod: method.id }))}
+                    onClick={() => {
+                      setFormData((prev) => ({ ...prev, paymentMethod: method.id }))
+                      setError('')
+                    }}
                     className={`p-4 rounded-lg border-2 font-medium transition-all text-left ${
                       formData.paymentMethod === method.id
                         ? 'border-white text-white'
                         : 'border-gray-300 text-gray-700 hover:border-gray-400'
                     }`}
                     style={{
-                      background: formData.paymentMethod === method.id ? 'var(--green-dark)' : '#f9faf9',
+                      background: formData.paymentMethod === method.id ? 'var(--brand-dark)' : '#fcfaf5',
                     }}
                   >
                     <div className="text-2xl mb-2">{method.emoji}</div>
@@ -257,7 +262,7 @@ export default function GivePage() {
                 onChange={handleInputChange}
                 placeholder="Add a prayer request, praise, or message..."
                 rows={4}
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-green-600 resize-none"
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-brand-main resize-none"
               />
             </div>
 
@@ -266,14 +271,26 @@ export default function GivePage() {
               <div
                 className="p-4 rounded-lg border-2"
                 style={{
-                  background: 'rgba(45, 122, 62, 0.05)',
-                  borderColor: 'var(--green-dark)',
+                  background: 'var(--brand-pale)',
+                  borderColor: 'var(--brand-dark)',
                 }}
               >
                 <p className="text-sm text-gray-600 mb-1">Total Amount to Give:</p>
-                <p className="text-3xl font-bold" style={{ color: 'var(--green-dark)' }}>
+                <p className="text-3xl font-bold" style={{ color: 'var(--brand-dark)' }}>
                   ₵{finalAmount}
                 </p>
+              </div>
+            )}
+
+            {error && (
+              <div
+                role="alert"
+                className="flex items-start gap-3 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm"
+              >
+                <svg className="w-5 h-5 flex-shrink-0 mt-px" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                </svg>
+                <span>{error}</span>
               </div>
             )}
 
@@ -282,14 +299,14 @@ export default function GivePage() {
               type="submit"
               disabled={!finalAmount}
               className="w-full py-4 rounded-xl font-bold text-lg text-white transition-all hover:shadow-lg transform hover:scale-105 duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-              style={{ background: 'linear-gradient(135deg, var(--green-dark) 0%, #2d7a3e 100%)' }}
+              style={{ background: 'linear-gradient(135deg, var(--brand-dark) 0%, #96700f 100%)' }}
             >
               {finalAmount ? `Proceed to Payment (₵${finalAmount})` : 'Select an Amount'}
             </button>
 
             {/* Tax Notice */}
-            <div className="p-4 rounded-lg bg-blue-50 border-l-4 border-blue-400">
-              <p className="text-sm text-blue-700">
+            <div className="p-4 rounded-lg bg-brand-pale border-l-4 border-gold">
+              <p className="text-sm text-brand-dark">
                 <span className="font-semibold">📄 Tax Receipt:</span> A tax-deductible receipt will be provided for your records.
               </p>
             </div>

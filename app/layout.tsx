@@ -4,10 +4,10 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
-  title: 'Gideon Peprah Ministries – Advancing the Kingdom of God',
+  title: 'Gideon Peprah Ministries – Interpreting Destinies',
   description: 'Mobilising the Body of Christ to re-position God\'s people for the second coming of our Lord Jesus Christ.',
   icons: {
-    icon: '/images/logo.jpg',
+    icon: '/images/favicon.png',
   },
 }
 
@@ -17,8 +17,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
-      <body className="bg-slate-950 text-slate-100">
+    <html lang="en">
+      <body className="bg-white text-ink">
         <Navbar />
         <main>{children}</main>
         <Footer />

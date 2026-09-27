@@ -1,7 +1,6 @@
 import type { Config } from 'tailwindcss'
 
 const config: Config = {
-  darkMode: 'class',
   content: [
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -10,21 +9,27 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        green: {
-          dark: '#1a5c2a',
-          main: '#2d7a3e',
-          light: '#3d9b52',
-          pale: '#e8f5eb',
+        brand: {
+          dark: '#5c440c',
+          main: '#96700f',
+          light: '#d4af37',
+          pale: '#fbf5e6',
         },
+        // Amber-brown used for headings; `light` is a warm gold accent.
         gold: {
-          DEFAULT: '#c9a227',
-          light: '#e8c157',
-          dark: '#a07d1a',
+          DEFAULT: '#955a00',
+          light: '#e8c35a',
+          dark: '#6e4200',
+        },
+        ink: {
+          DEFAULT: '#2b2620',
+          muted: '#5c554c',
+          soft: '#6f675c',
         },
       },
       fontFamily: {
-        playfair: ['Playfair Display', 'serif'],
-        lato: ['Lato', 'sans-serif'],
+        heading: ['Inter', 'sans-serif'],
+        body: ['Quicksand', 'sans-serif'],
       },
     },
   },

@@ -4,12 +4,15 @@ import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
+import SocialIcons from '@/components/SocialIcons'
 
-const navItems = [
+type NavItem = { label: string; href: string; children?: { label: string; href: string }[] }
+
+const navItems: NavItem[] = [
   { label: 'About Us', href: '/about-us', children: [
       { label: 'How It Began', href: '/about-us' },
       { label: 'Statements of Faith', href: '/about-us#faith' },
-      { label: 'The Pastor', href: '/about-us#pastor' },
+      { label: 'The Prophet', href: '/about-us#prophet' },
       { label: 'Leadership', href: '/about-us#leadership' },
     ],
   },
@@ -17,9 +20,47 @@ const navItems = [
   { label: 'Events', href: '/events' },
   { label: 'Resources', href: '/resources' },
   { label: 'Media', href: '/media' },
-  { label: 'Give', href: '/give' },
   { label: 'Contact Us', href: '/contact' },
 ]
+
+const getInvolved: NavItem = {
+  label: 'Get Involved',
+  href: '/get-involved',
+  children: [
+    { label: 'Give', href: '/give' },
+    { label: 'Become a Partner', href: '/get-involved' },
+    { label: 'Volunteer', href: '/get-involved#volunteer' },
+  ],
+}
+
+function Chevron({ open }: { open: boolean }) {
+  return (
+    <svg
+      className={`w-3.5 h-3.5 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+      fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+    </svg>
+  )
+}
+
+function Dropdown({ items, align = 'left' }: { items: { label: string; href: string }[]; align?: 'left' | 'right' }) {
+  return (
+    <div
+      className={`absolute top-full ${align === 'right' ? 'right-0' : 'left-0'} mt-3 w-56 rounded-xl overflow-hidden bg-white shadow-xl z-50 border border-brand-main/10`}
+    >
+      {items.map((child) => (
+        <Link
+          key={child.href}
+          href={child.href}
+          className="block px-5 py-3 text-[15px] font-semibold text-brand-main hover:bg-brand-pale transition-colors border-b border-brand-main/5 last:border-0"
+        >
+          {child.label}
+        </Link>
+      ))}
+    </div>
+  )
+}
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -46,179 +87,158 @@ export default function Navbar() {
 
   useEffect(() => {
     function handleScroll() {
-      setScrolled(window.scrollY > 20)
+      setScrolled(window.scrollY > 60)
     }
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  const toggle = (label: string) => setOpenDropdown(openDropdown === label ? null : label)
+  const isActive = (href: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href))
+
   return (
-    <nav
-      ref={navRef}
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        scrolled ? 'shadow-xl' : 'shadow-md'
-      }`}
-      style={{ background: scrolled ? 'rgba(13,53,22,0.97)' : 'var(--green-dark)', backdropFilter: scrolled ? 'blur(12px)' : 'none' }}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className={`flex items-center justify-between transition-all duration-300 ${scrolled ? 'h-[72px]' : 'h-[88px]'}`}>
+    <>
+      {/* Top social bar */}
+      <div className="bg-brand-main text-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+          <SocialIcons />
+          <span className="hidden sm:block text-sm font-semibold tracking-wide text-white/85">
+            Interpreting Destinies
+          </span>
+        </div>
+      </div>
 
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 flex-shrink-0 group">
-            <Image
-              src="/images/logo.jpg"
-              alt="Gideon Peprah Ministries"
-              width={56}
-              height={56}
-              className={`rounded-full object-cover flex-shrink-0 transition-all duration-300 ring-2 ring-gold/30 group-hover:ring-gold/60 ${scrolled ? 'w-11 h-11' : 'w-14 h-14'}`}
-            />
-            <div className="text-white hidden sm:block">
-              <div className={`font-playfair font-bold leading-tight transition-all duration-300 ${scrolled ? 'text-[15px]' : 'text-[17px]'}`}>
-                Gideon Peprah Ministries
-              </div>
-              <div className="text-[10px] tracking-[1.8px] uppercase" style={{ color: 'var(--gold-light)' }}>
-                Advancing the Kingdom
-              </div>
-            </div>
-          </Link>
+      <nav
+        ref={navRef}
+        className={`sticky top-0 z-50 bg-white transition-shadow duration-300 ${scrolled ? 'shadow-md' : ''}`}
+      >
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className={`flex items-center justify-between transition-all duration-300 ${scrolled ? 'h-[76px]' : 'h-[112px]'}`}>
 
-          {/* Desktop Nav */}
-          <ul className="hidden lg:flex items-center gap-0.5">
-            {navItems.map((item) => (
-              <li key={item.label} className="relative">
-                {item.children ? (
-                  <div>
-                    <button
-                      onClick={() => setOpenDropdown(openDropdown === item.label ? null : item.label)}
-                      className={`flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
-                        pathname.startsWith(item.href)
-                          ? 'text-white bg-white/15'
-                          : 'text-white/80 hover:text-white hover:bg-white/10'
+            {/* Logo */}
+            <Link href="/" className="flex-shrink-0">
+              <Image
+                src="/images/logo-gold.png"
+                alt="Gideon Peprah Ministries"
+                width={1131}
+                height={400}
+                priority
+                className={`w-auto transition-all duration-300 ${scrolled ? 'h-14' : 'h-16 sm:h-20'}`}
+              />
+            </Link>
+
+            {/* Desktop Nav */}
+            <ul className="hidden lg:flex items-center gap-1">
+              {navItems.map((item) => (
+                <li key={item.label} className="relative">
+                  {item.children ? (
+                    <>
+                      <button
+                        onClick={() => toggle(item.label)}
+                        className={`flex items-center gap-1 px-3 py-2 text-[16px] font-semibold transition-colors ${
+                          isActive(item.href) ? 'text-brand-dark' : 'text-brand-main hover:text-brand-dark'
+                        }`}
+                      >
+                        {item.label}
+                        <Chevron open={openDropdown === item.label} />
+                      </button>
+                      {openDropdown === item.label && <Dropdown items={item.children} />}
+                    </>
+                  ) : (
+                    <Link
+                      href={item.href}
+                      className={`block px-3 py-2 text-[16px] font-semibold transition-colors ${
+                        isActive(item.href) ? 'text-brand-dark underline underline-offset-8 decoration-2 decoration-gold-light' : 'text-brand-main hover:text-brand-dark'
                       }`}
                     >
                       {item.label}
-                      <svg
-                        className={`w-3.5 h-3.5 transition-transform duration-200 ${openDropdown === item.label ? 'rotate-180' : ''}`}
-                        fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                      </svg>
+                    </Link>
+                  )}
+                </li>
+              ))}
+              <li className="relative ml-3">
+                <button
+                  onClick={() => toggle(getInvolved.label)}
+                  className="flex items-center gap-1.5 px-6 py-3 rounded-full bg-brand-main text-white text-[16px] font-bold transition-colors hover:bg-brand-dark"
+                >
+                  {getInvolved.label}
+                  <Chevron open={openDropdown === getInvolved.label} />
+                </button>
+                {openDropdown === getInvolved.label && <Dropdown items={getInvolved.children!} align="right" />}
+              </li>
+            </ul>
+
+            {/* Mobile burger */}
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="lg:hidden p-2.5 rounded-lg text-brand-main hover:bg-brand-pale transition-colors"
+              aria-label="Toggle menu"
+            >
+              {mobileOpen ? (
+                <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        <div
+          className={`lg:hidden overflow-hidden bg-white transition-all duration-300 ${
+            mobileOpen ? 'max-h-[720px] opacity-100' : 'max-h-0 opacity-0'
+          }`}
+        >
+          <div className="px-4 py-3 space-y-1 border-t border-brand-main/10">
+            {[...navItems, getInvolved].map((item) => (
+              <div key={item.label}>
+                {item.children ? (
+                  <>
+                    <button
+                      onClick={() => setMobileExpanded(mobileExpanded === item.label ? null : item.label)}
+                      className="flex items-center justify-between w-full px-3 py-3 rounded-lg text-[15px] font-semibold text-brand-main hover:bg-brand-pale transition-colors"
+                    >
+                      {item.label}
+                      <Chevron open={mobileExpanded === item.label} />
                     </button>
-                    {openDropdown === item.label && (
-                      <div
-                        className="absolute top-full left-0 mt-2 w-56 rounded-xl overflow-hidden shadow-2xl z-50"
-                        style={{ background: 'var(--green-dark)', border: '1px solid rgba(201,162,39,0.2)' }}
-                      >
+                    <div
+                      className={`overflow-hidden transition-all duration-200 ${
+                        mobileExpanded === item.label ? 'max-h-60 opacity-100' : 'max-h-0 opacity-0'
+                      }`}
+                    >
+                      <div className="ml-4 mt-1 space-y-1 border-l-2 border-gold-light pl-3">
                         {item.children.map((child) => (
                           <Link
                             key={child.href}
                             href={child.href}
-                            className="block px-5 py-3.5 text-sm text-white/75 hover:text-white hover:bg-white/10 transition-all duration-200 border-b border-white/5 last:border-0"
+                            className="block py-2.5 text-sm font-semibold text-brand-main/80 hover:text-brand-dark transition-colors"
                           >
                             {child.label}
                           </Link>
                         ))}
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  </>
                 ) : (
                   <Link
                     href={item.href}
-                    className={`block px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
-                      pathname === item.href
-                        ? 'text-white bg-white/15'
-                        : 'text-white/80 hover:text-white hover:bg-white/10'
-                    }`}
+                    className="block px-3 py-3 rounded-lg text-[15px] font-semibold text-brand-main hover:bg-brand-pale transition-colors"
                   >
                     {item.label}
                   </Link>
                 )}
-              </li>
+              </div>
             ))}
-          </ul>
-
-          {/* Mobile burger */}
-          <button
-            onClick={() => setMobileOpen(!mobileOpen)}
-            className="lg:hidden p-2.5 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-all duration-200"
-            aria-label="Toggle menu"
-          >
-            {mobileOpen ? (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            )}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Menu */}
-      <div
-        className={`lg:hidden overflow-hidden transition-all duration-300 ${
-          mobileOpen ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'
-        }`}
-        style={{ background: 'var(--green-dark)' }}
-      >
-        <div className="px-4 py-3 space-y-1 border-t border-white/10">
-          {navItems.map((item) => (
-            <div key={item.label}>
-              {item.children ? (
-                <>
-                  <button
-                    onClick={() => setMobileExpanded(mobileExpanded === item.label ? null : item.label)}
-                    className="flex items-center justify-between w-full px-3 py-3 rounded-lg text-sm text-white/85 hover:text-white hover:bg-white/10 transition-all duration-200"
-                  >
-                    {item.label}
-                    <svg
-                      className={`w-4 h-4 transition-transform duration-200 ${mobileExpanded === item.label ? 'rotate-180' : ''}`}
-                      fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  <div
-                    className={`overflow-hidden transition-all duration-200 ${
-                      mobileExpanded === item.label ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'
-                    }`}
-                  >
-                    <div className="ml-4 mt-1 space-y-1 border-l-2 pl-3" style={{ borderColor: 'var(--gold)' }}>
-                      {item.children.map((child) => (
-                        <Link
-                          key={child.href}
-                          href={child.href}
-                          className="block py-2.5 text-sm text-white/70 hover:text-white transition-colors"
-                        >
-                          {child.label}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <Link
-                  href={item.href}
-                  className="block px-3 py-3 rounded-lg text-sm text-white/85 hover:text-white hover:bg-white/10 transition-all duration-200"
-                >
-                  {item.label}
-                </Link>
-              )}
+            <div className="pt-3 pb-2">
+              <Link href="/give" className="btn-primary block text-center">Give</Link>
             </div>
-          ))}
-          <div className="pt-3 pb-2">
-            <Link
-              href="/get-involved"
-              className="block text-center px-5 py-3 rounded-full text-sm font-bold transition-all duration-200 hover:shadow-lg"
-              style={{ background: 'var(--gold)', color: 'var(--green-dark)' }}
-            >
-              Give
-            </Link>
           </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </>
   )
 }

@@ -1,17 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Lato:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&family=Quicksand:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --green-dark: #0d3516;
-  --green-main: #1a5c2a;
-  --green-light: #2d7a3e;
-  --green-pale: #1a3d25;
-  --gold: #c9a227;
-  --gold-light: #e8c157;
-  --gold-dark: #a07d1a;
+  --brand-dark: #5c440c;
+  --brand-main: #96700f;
+  --brand-light: #d4af37;
+  --brand-pale: #fbf5e6;
+  --gold: #955a00;
+  --gold-light: #e8c35a;
+  --gold-dark: #6e4200;
 }
 
 html {
@@ -19,39 +19,36 @@ html {
 }
 
 body {
-  font-family: 'Lato', sans-serif;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 500;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-.font-playfair {
-  font-family: 'Playfair Display', serif;
+.font-heading {
+  font-family: 'Inter', sans-serif;
+  letter-spacing: -0.02em;
 }
 
 @layer components {
   .btn-primary {
-    @apply inline-block bg-gold text-green-dark font-bold px-8 py-4 rounded-full transition-all duration-300 hover:bg-gold-light hover:-translate-y-0.5 shadow-lg hover:shadow-xl;
+    @apply inline-block bg-brand-main text-white font-bold px-8 py-3.5 rounded-full transition-all duration-300 hover:bg-brand-dark hover:-translate-y-0.5 shadow-md hover:shadow-lg;
   }
   .btn-outline-white {
-    @apply inline-block border-2 border-white/70 text-white font-semibold px-8 py-4 rounded-full transition-all duration-300 hover:bg-white/15 hover:border-white;
+    @apply inline-block border-2 border-white/70 text-white font-semibold px-8 py-3.5 rounded-full transition-all duration-300 hover:bg-white/15 hover:border-white;
   }
-  .btn-outline-green {
-    @apply inline-block border-2 border-green-light text-green-light font-semibold px-8 py-4 rounded-full transition-all duration-300 hover:bg-green-light hover:text-green-dark;
+  .btn-outline-brand {
+    @apply inline-block border-2 border-brand-main text-brand-main font-bold px-8 py-3.5 rounded-full transition-all duration-300 hover:bg-brand-main hover:text-white;
   }
   .section-title {
-    @apply font-playfair text-4xl font-bold text-green-light mb-3;
+    @apply font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gold mb-3;
   }
   .gold-underline {
-    @apply w-16 h-1 bg-gold mx-auto mt-2;
+    @apply w-16 h-1 bg-gold-light mx-auto mt-2 rounded-full;
   }
   .gold-bar {
     @apply h-1 w-full;
-    background: linear-gradient(90deg, var(--green-dark), var(--gold), var(--green-dark));
-  }
-  .page-hero {
-    @apply relative flex items-center justify-center text-white text-center px-6;
-    min-height: 340px;
-    background: linear-gradient(160deg, rgba(13,53,22,0.95) 0%, rgba(13,53,22,0.75) 100%);
+    background: linear-gradient(90deg, var(--brand-main), var(--gold-light), var(--brand-main));
   }
   .card-hover {
     @apply transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl;
@@ -62,27 +59,7 @@ body {
   from { opacity: 0; transform: translateY(30px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-@keyframes panBg {
-  from { transform: scale(1) translateX(0); }
-  to   { transform: scale(1.06) translateX(-2%); }
-}
-@keyframes bounce {
-  0%,100% { transform: translateX(-50%) translateY(0); }
-  50%     { transform: translateX(-50%) translateY(8px); }
-}
-
 .animate-fade-up { animation: fadeUp 0.9s ease both; }
-.animate-pan-bg  { animation: panBg 20s ease-in-out infinite alternate; }
-.animate-bounce-scroll { animation: bounce 2s ease-in-out infinite; }
-
-.hero-bg-overlay {
-  background: linear-gradient(
-    160deg,
-    rgba(26,92,42,0.88) 0%,
-    rgba(26,92,42,0.5) 50%,
-    rgba(0,0,0,0.3) 100%
-  );
-}
 
 /* Inline video player slide-down */
 @keyframes slideDown {
@@ -94,8 +71,21 @@ body {
   transform-origin: top center;
 }
 
-/* Selection color */
 ::selection {
-  background: rgba(201, 162, 39, 0.3);
-  color: white;
+  background: rgba(150,112,15, 0.25);
+}
+
+/* Admin confirmation popup */
+@keyframes dialogIn {
+  from { opacity: 0; transform: translateY(8px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes backdropIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.confirm-dialog[open] { animation: dialogIn 0.18s ease-out; }
+.confirm-dialog[open]::backdrop { animation: backdropIn 0.18s ease-out; }
+@media (prefers-reduced-motion: reduce) {
+  .confirm-dialog[open], .confirm-dialog[open]::backdrop { animation: none; }
 }

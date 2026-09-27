@@ -2,37 +2,15 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import Image from 'next/image'
+import type { Slide } from '@/lib/slides'
 
-interface SlideImage {
-  id: number
-  src: string
-  alt: string
-}
-
-const slides: SlideImage[] = [
-  { id: 1, src: '/images/V_10.jpg', alt: 'Gideon Peprah Ministries' },
-  { id: 2, src: '/images/V_13.jpg', alt: 'Ministry service' },
-  { id: 3, src: '/images/V_23.jpg', alt: 'Worship gathering' },
-  { id: 4, src: '/images/V_26.jpg', alt: 'Worship and ministry' },
-  { id: 5, src: '/images/V_44.jpg', alt: 'Church fellowship' },
-  { id: 6, src: '/images/V_45.jpg', alt: 'Ministry gathering' },
-  { id: 7, src: '/images/V_56.jpg', alt: 'Community event' },
-  { id: 8, src: '/images/V_62.jpg', alt: 'Church service' },
-  { id: 9, src: '/images/V_85.jpg', alt: 'Kingdom work' },
-  { id: 10, src: '/images/V_111.jpg', alt: 'Community fellowship' },
-  { id: 11, src: '/images/V_114.jpg', alt: 'Praise and worship' },
-  { id: 12, src: '/images/V_132.jpg', alt: 'Ministry outreach' },
-  { id: 13, src: '/images/V_143.jpg', alt: 'Church gathering' },
-  { id: 14, src: '/images/V_165.jpg', alt: 'Ministry event' },
-  { id: 15, src: '/images/V_172.jpg', alt: 'Fellowship and worship' },
-  { id: 16, src: '/images/V_188.jpg', alt: 'Gospel outreach' },
-  { id: 17, src: '/images/V_190.jpg', alt: 'Community impact' },
-  { id: 18, src: '/images/V_199.jpg', alt: 'Kingdom service' },
-  { id: 19, src: '/images/V_203.jpg', alt: 'Advancing the Kingdom' },
-  { id: 20, src: '/images/V_204.jpg', alt: 'Ministry in action' },
-]
-
-export default function ImageSlider() {
+export default function ImageSlider({
+  slides,
+  className = 'h-[75vh] min-h-[420px] max-h-[700px]',
+}: {
+  slides: Slide[]
+  className?: string
+}) {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isAutoPlay, setIsAutoPlay] = useState(true)
   const [direction, setDirection] = useState<'next' | 'prev'>('next')
@@ -86,14 +64,14 @@ export default function ImageSlider() {
 
   return (
     <div
-      className="relative w-full overflow-hidden bg-slate-950"
+      className="relative w-full overflow-hidden"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       onMouseEnter={() => setIsAutoPlay(false)}
       onMouseLeave={() => setIsAutoPlay(true)}
     >
-      <div className="relative h-[75vh] min-h-[420px] max-h-[700px]">
+      <div className={`relative ${className}`}>
         {slides.map((slide, index) => {
           if (!visibleIndices.has(index)) return null
 
@@ -113,11 +91,21 @@ export default function ImageSlider() {
                 transition: 'opacity 700ms ease-in-out, transform 700ms ease-in-out',
               }}
             >
+              {slide.banner && (
+                <Image
+                  src={slide.image_url}
+                  alt=""
+                  aria-hidden
+                  fill
+                  sizes="96px"
+                  className="object-cover scale-125 blur-2xl brightness-75 lg:hidden"
+                />
+              )}
               <Image
-                src={slide.src}
+                src={slide.image_url}
                 alt={slide.alt}
                 fill
-                className="object-cover"
+                className={slide.banner ? 'object-contain lg:object-cover' : 'object-cover object-[center_30%]'}
                 priority={index === 0}
                 loading={index === 0 ? 'eager' : 'lazy'}
                 quality={90}

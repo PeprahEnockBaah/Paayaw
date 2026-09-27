@@ -1,47 +1,81 @@
 import { isAuthed } from '@/lib/auth'
 import { getEvents, splitDate, tagColors } from '@/lib/events'
-import { logout } from './actions'
+import { logout, deleteEvent } from './actions'
 import LoginForm from './login-form'
 import EventForm from './event-form'
-import DeleteButton from './delete-button'
+import ConfirmDelete from './confirm-delete'
+import SliderSection from './slider-section'
+import SermonsSection from './sermons-section'
+import BooksSection from './books-section'
+import { SectionHeader } from './admin-ui'
 
-export const metadata = { title: 'Manage Events – GPM Admin' }
+const QUICK_LINKS = [
+  { href: '#slider', label: 'Slider' },
+  { href: '#sermons', label: 'Sermons' },
+  { href: '#books', label: 'Books' },
+  { href: '#events', label: 'Events' },
+]
+
+export const metadata = {
+  title: 'Website Admin – GPM',
+  // Keep the admin page out of Google and other search engines.
+  robots: { index: false, follow: false },
+}
 export const dynamic = 'force-dynamic'
 
 export default async function AdminPage({
   searchParams,
 }: {
-  searchParams: { error?: string; added?: string; deleted?: string }
+  searchParams: { error?: string; left?: string; added?: string; deleted?: string; slide?: string; sermon?: string; book?: string }
 }) {
   if (!isAuthed()) {
-    return <LoginForm error={!!searchParams.error} />
+    const error = searchParams.error === 'locked' ? 'locked' : searchParams.error ? 'wrong' : undefined
+    return <LoginForm error={error} attemptsLeft={Number(searchParams.left) || undefined} />
   }
 
   const events = await getEvents()
 
   return (
-    <section className="max-w-4xl mx-auto px-6 py-16">
-      <div className="flex items-center justify-between mb-8">
+    <section className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
+      <div className="flex items-start justify-between gap-4 mb-6">
         <div>
-          <h1 className="font-playfair text-3xl font-bold" style={{ color: 'var(--green-dark)' }}>
-            Manage Events
+          <h1 className="font-heading text-3xl font-bold" style={{ color: 'var(--brand-dark)' }}>
+            Website Admin
           </h1>
-          <p className="text-sm mt-1" style={{ color: '#4a6350' }}>
-            Add new events or remove old ones. Changes appear on the Events page right away.
+          <p className="text-sm mt-1" style={{ color: '#6f675c' }}>
+            Update the slider, sermons, books and events. Changes appear on the website right away.
           </p>
         </div>
         <form action={logout}>
-          <button type="submit" className="text-sm font-semibold" style={{ color: 'var(--green-main)' }}>
+          <button type="submit" className="text-sm font-semibold" style={{ color: 'var(--brand-main)' }}>
             Log out
           </button>
         </form>
       </div>
 
+      <nav className="flex flex-wrap gap-2 mb-10">
+        {QUICK_LINKS.map((l) => (
+          <a
+            key={l.href}
+            href={l.href}
+            className="px-4 py-1.5 rounded-full text-sm font-semibold bg-brand-pale text-brand-dark hover:bg-brand-light/30 transition-colors"
+          >
+            {l.label}
+          </a>
+        ))}
+      </nav>
+
+      <SliderSection status={searchParams.slide} />
+      <SermonsSection status={searchParams.sermon} />
+      <BooksSection status={searchParams.book} />
+
+      <SectionHeader id="events" title="Events" hint="Upcoming events shown on the Events page, sorted by date." />
+
       {searchParams.added && (
-        <p className="text-sm mb-6 px-4 py-2.5 rounded-lg bg-green-pale text-green-dark">✓ Event added.</p>
+        <p className="text-sm mb-6 px-4 py-2.5 rounded-lg bg-brand-pale text-brand-dark">✓ Event added.</p>
       )}
       {searchParams.deleted && (
-        <p className="text-sm mb-6 px-4 py-2.5 rounded-lg bg-green-pale text-green-dark">✓ Event deleted.</p>
+        <p className="text-sm mb-6 px-4 py-2.5 rounded-lg bg-brand-pale text-brand-dark">✓ Event deleted.</p>
       )}
       {searchParams.error === 'save' && (
         <p className="text-sm mb-6 px-4 py-2.5 rounded-lg bg-red-50 text-red-700">
@@ -55,19 +89,19 @@ export default async function AdminPage({
       )}
 
       {/* Add event */}
-      <div className="bg-white rounded-2xl shadow-sm p-6 mb-10" style={{ border: '1px solid rgba(26,92,42,0.1)' }}>
-        <h2 className="font-playfair text-xl font-bold mb-5" style={{ color: 'var(--green-dark)' }}>
+      <div className="bg-white rounded-2xl shadow-sm p-6 mb-10" style={{ border: '1px solid rgba(150,112,15,0.1)' }}>
+        <h2 className="font-heading text-xl font-bold mb-5" style={{ color: 'var(--brand-dark)' }}>
           Add a New Event
         </h2>
         <EventForm />
       </div>
 
       {/* Existing events */}
-      <h2 className="font-playfair text-xl font-bold mb-4" style={{ color: 'var(--green-dark)' }}>
+      <h2 className="font-heading text-xl font-bold mb-4" style={{ color: 'var(--brand-dark)' }}>
         Current Events ({events.length})
       </h2>
       {events.length === 0 ? (
-        <p className="text-sm" style={{ color: '#4a6350' }}>
+        <p className="text-sm" style={{ color: '#6f675c' }}>
           No events yet. Add your first one above.
         </p>
       ) : (
@@ -78,13 +112,13 @@ export default async function AdminPage({
               <div
                 key={e.id}
                 className="bg-white rounded-xl p-4 flex items-center gap-4"
-                style={{ border: '1px solid rgba(26,92,42,0.1)' }}
+                style={{ border: '1px solid rgba(150,112,15,0.1)' }}
               >
                 <div
                   className="flex flex-col items-center justify-center rounded-lg px-3 py-2 text-white flex-shrink-0"
-                  style={{ background: 'var(--green-dark)', minWidth: '64px' }}
+                  style={{ background: 'var(--brand-dark)', minWidth: '64px' }}
                 >
-                  <span className="text-xl font-black font-playfair leading-none">{d.day}</span>
+                  <span className="text-xl font-black font-heading leading-none">{d.day}</span>
                   <span className="text-[10px] font-bold tracking-widest uppercase" style={{ color: 'var(--gold-light)' }}>
                     {d.month}
                   </span>
@@ -94,7 +128,7 @@ export default async function AdminPage({
                 )}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="font-bold truncate" style={{ color: 'var(--green-dark)' }}>
+                    <h3 className="font-bold truncate" style={{ color: 'var(--brand-dark)' }}>
                       {e.title}
                     </h3>
                     {e.tag && (
@@ -103,11 +137,16 @@ export default async function AdminPage({
                       </span>
                     )}
                   </div>
-                  <p className="text-xs truncate" style={{ color: '#4a6350' }}>
+                  <p className="text-xs truncate" style={{ color: '#6f675c' }}>
                     {[e.location, e.time].filter(Boolean).join(' · ')}
                   </p>
                 </div>
-                <DeleteButton id={e.id} imageUrl={e.image_url} title={e.title} />
+                <ConfirmDelete
+                  action={deleteEvent}
+                  fields={{ id: e.id, image_url: e.image_url || '' }}
+                  title="Delete this event?"
+                  message={`"${e.title}" will be removed from the Events page. This cannot be undone.`}
+                />
               </div>
             )
           })}
