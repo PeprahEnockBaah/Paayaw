@@ -13,7 +13,7 @@ function SubmitButton() {
   )
 }
 
-const inputStyle = { borderColor: 'rgba(150,112,15,0.2)', color: '#2b2620' } as const
+const inputStyle = { borderColor: 'rgba(14,90,69,0.2)', color: '#1c2a25' } as const
 const inputClass = 'w-full px-4 py-2.5 rounded-lg border outline-none focus:ring-2'
 
 export default function SermonForm() {
@@ -49,7 +49,7 @@ export default function SermonForm() {
           <input name="title" required placeholder="e.g. The Hour is Now" className={inputClass} style={inputStyle} />
         </div>
       </div>
-      <p className="text-xs" style={{ color: '#6f675c' }}>
+      <p className="text-xs" style={{ color: '#66736d' }}>
         On Audiomack, open the sermon, tap <strong>Share → Copy link</strong>, and paste it here.
       </p>
       <SubmitButton />

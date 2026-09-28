@@ -19,7 +19,7 @@ const columns = [
       { label: 'Give Online', href: '/give' },
       { label: 'Events', href: '/events' },
       { label: 'Resources', href: '/resources' },
-      { label: 'Kingdom Revolution TV', href: '/media#tv' },
+      { label: 'VALOR TV', href: '/media#tv' },
       { label: 'Contact Us', href: '/contact' },
     ],
   },
@@ -35,7 +35,7 @@ export default function Footer() {
           <div className="col-span-2">
             <Link href="/" className="inline-block mb-5 leading-none">
               <div className="font-heading font-extrabold text-2xl text-white">Gideon Peprah</div>
-              <div className="mt-1 text-xs font-bold tracking-[0.3em] uppercase text-gold-light">Ministries</div>
+              <div className="mt-1 text-xs font-bold tracking-[0.3em] uppercase text-white">Ministries</div>
             </Link>
             <p className="text-sm leading-relaxed mb-6 max-w-md">
               To be a repositioned and revived people of God ready for the return of our Lord Jesus Christ.
@@ -46,7 +46,7 @@ export default function Footer() {
 
           {columns.map((col) => (
             <div key={col.title}>
-              <h4 className="font-heading text-sm font-bold uppercase tracking-wider mb-5 text-gold-light">
+              <h4 className="font-heading text-sm font-extrabold uppercase tracking-wider mb-5 text-white">
                 {col.title}
               </h4>
               <ul className="space-y-3">

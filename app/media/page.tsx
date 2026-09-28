@@ -125,7 +125,7 @@ export default function MediaPage() {
       {/* Header */}
       <section
         className="relative flex items-center justify-center text-white text-center px-6 py-14 sm:py-20"
-        style={{ background: 'linear-gradient(160deg, var(--brand-dark) 0%, #96700f 100%)' }}
+        style={{ background: 'linear-gradient(160deg, var(--brand-dark) 0%, #0e5a45 100%)' }}
       >
         <div
           className="absolute inset-0 opacity-[0.07]"
@@ -138,7 +138,7 @@ export default function MediaPage() {
             Watch & Listen
           </p>
           <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold mb-4">Media</h1>
-          <div className="w-16 h-1 mx-auto" style={{ background: 'var(--gold)' }} />
+          <div className="w-16 h-1 mx-auto" style={{ background: 'var(--brand-soft)' }} />
         </div>
       </section>
       <div className="gold-bar" />
@@ -370,7 +370,7 @@ export default function MediaPage() {
       </section>
 
       {/* Subscribe CTA */}
-      <section className="py-14 px-6 text-center" style={{ background: 'var(--brand-pale)' }}>
+      <section className="py-14 px-6 text-center bg-paper">
         <Link
           href="https://www.youtube.com/@gideonpeprah/videos"
           target="_blank"

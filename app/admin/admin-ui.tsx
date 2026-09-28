@@ -1,7 +1,7 @@
 import { moveItem } from './actions'
 
-export const MUTED = '#6f675c'
-export const cardStyle = { border: '1px solid rgba(150,112,15,0.1)' } as const
+export const MUTED = '#66736d'
+export const cardStyle = { border: '1px solid rgba(14,90,69,0.1)' } as const
 
 /** Success / error banner shown after an admin action. */
 export function Notice({ ok, children }: { ok: boolean; children: React.ReactNode }) {
@@ -81,5 +81,78 @@ export function MoveButtons({
         </form>
       ))}
     </div>
+  )
+}
+
+// ── Form fields for the edit popups ──────────────────────────
+
+const fieldClass =
+  'w-full px-3.5 py-2.5 rounded-lg border border-brand-main/20 bg-white text-ink outline-none focus:border-brand-main focus:ring-2 focus:ring-brand-main/15'
+
+function FieldLabel({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <label className="block">
+      <span className="block text-xs font-bold mb-1 text-brand-dark">{label}</span>
+      {children}
+    </label>
+  )
+}
+
+export function TextField({ label, name, defaultValue, required, type = 'text', placeholder }: {
+  label: string; name: string; defaultValue?: string | null; required?: boolean; type?: string; placeholder?: string
+}) {
+  return (
+    <FieldLabel label={label}>
+      <input name={name} type={type} defaultValue={defaultValue ?? ''} required={required} placeholder={placeholder} className={fieldClass} />
+    </FieldLabel>
+  )
+}
+
+export function TextArea({ label, name, defaultValue, rows = 3 }: { label: string; name: string; defaultValue?: string | null; rows?: number }) {
+  return (
+    <FieldLabel label={label}>
+      <textarea name={name} rows={rows} defaultValue={defaultValue ?? ''} className={`${fieldClass} resize-none`} />
+    </FieldLabel>
+  )
+}
+
+export function SelectField({ label, name, defaultValue, options }: {
+  label: string; name: string; defaultValue?: string | null; options: readonly string[]
+}) {
+  return (
+    <FieldLabel label={label}>
+      <select name={name} defaultValue={defaultValue ?? options[0]} className={fieldClass}>
+        {options.map((o) => (
+          <option key={o} value={o}>{o}</option>
+        ))}
+      </select>
+    </FieldLabel>
+  )
+}
+
+/** Shows the current image with an optional file picker to replace it. */
+export function ImageField({ label, currentUrl }: { label: string; currentUrl?: string | null }) {
+  return (
+    <FieldLabel label={label}>
+      <div className="flex items-center gap-3">
+        {currentUrl && <img src={currentUrl} alt="" className="w-20 h-14 rounded-md object-cover bg-gray-100 flex-shrink-0" />}
+        <input
+          type="file"
+          name="image"
+          accept="image/*"
+          className="w-full text-sm file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-brand-pale file:text-brand-dark file:font-semibold"
+        />
+      </div>
+      <span className="block mt-1 text-[11px] text-ink-soft">Leave empty to keep the current image.</span>
+    </FieldLabel>
+  )
+}
+
+export function Checkbox({ name, defaultChecked, children }: { name: string; defaultChecked?: boolean; children: React.ReactNode }) {
+  return (
+    <label className="flex items-start gap-2.5 text-sm text-brand-dark cursor-pointer">
+      <input type="checkbox" name={name} defaultChecked={defaultChecked} className="mt-1 accent-[var(--brand-main)]" />
+      <span>{children}</span>
+    </label>
   )
 }

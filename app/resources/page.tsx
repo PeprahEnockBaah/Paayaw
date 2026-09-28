@@ -1,6 +1,8 @@
 import FitImage from '@/components/FitImage'
 import Link from 'next/link'
 import { getBooks, getSermons, audiomackEmbedUrl, AUDIOMACK_PROFILE } from '@/lib/resources'
+import { formatMoney } from '@/lib/giving'
+import { orderPath } from '@/lib/order-settings'
 
 export const metadata = { title: 'Resources – Gideon Peprah Ministries' }
 
@@ -15,12 +17,12 @@ export default async function ResourcesPage() {
     <>
       <section
         className="relative flex items-center justify-center text-white text-center px-6 py-14 sm:py-20 lg:py-28"
-        style={{ background: 'linear-gradient(160deg, var(--brand-dark) 0%, #96700f 100%)' }}
+        style={{ background: 'linear-gradient(160deg, var(--brand-dark) 0%, #0e5a45 100%)' }}
       >
         <div className="relative z-10">
           <p className="text-xs tracking-[4px] uppercase font-bold mb-4" style={{ color: 'var(--gold-light)' }}>Grow Your Faith</p>
           <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold mb-4">Resources</h1>
-          <div className="w-16 h-1 mx-auto" style={{ background: 'var(--gold)' }} />
+          <div className="w-16 h-1 mx-auto" style={{ background: 'var(--brand-soft)' }} />
         </div>
       </section>
       <div className="gold-bar" />
@@ -29,7 +31,7 @@ export default async function ResourcesPage() {
       <section className="max-w-7xl mx-auto px-6 py-14 sm:py-20">
         <div className="text-center mb-12">
           <h2 className="section-title">Books &amp; Devotionals</h2>
-          <div className="gold-underline" />
+          <div className="title-underline" />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {books.map((b) => (
@@ -41,12 +43,16 @@ export default async function ResourcesPage() {
                 sizes="(min-width: 1024px) 300px, (min-width: 640px) 50vw, 100vw"
               />
               <div className="p-5">
-                <span className="text-[10px] font-bold tracking-widest uppercase" style={{ color: 'var(--gold-dark)' }}>
+                <span className="text-[10px] font-bold tracking-widest uppercase text-brand-main">
                   {b.category}
                 </span>
                 <h3 className="font-heading font-bold text-lg mt-1 mb-2" style={{ color: 'var(--brand-dark)' }}>{b.title}</h3>
-                <p className="text-xs leading-relaxed mb-4" style={{ color: '#6f675c' }}>{b.description}</p>
-                {b.link_url ? (
+                <p className="text-xs leading-relaxed mb-4" style={{ color: '#66736d' }}>{b.description}</p>
+                {b.price_minor ? (
+                  <Link href={orderPath(b.id)} className="inline-flex items-center gap-2 text-xs font-bold" style={{ color: 'var(--brand-main)' }}>
+                    Order Now · {formatMoney(b.price_minor / 100, 'GHS')} →
+                  </Link>
+                ) : b.link_url ? (
                   <a
                     href={b.link_url}
                     target="_blank"
@@ -68,11 +74,11 @@ export default async function ResourcesPage() {
       </section>
 
       {/* Audio Sermons */}
-      <section id="audio-sermons" style={{ background: 'var(--brand-pale)' }} className="py-14 sm:py-20 px-6 scroll-mt-28">
+      <section id="audio-sermons" className="bg-paper py-14 sm:py-20 px-6 scroll-mt-28">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="section-title">Audio Sermons</h2>
-            <div className="gold-underline" />
+            <div className="title-underline" />
           </div>
           <div className="space-y-6">
             {sermons.map((s) => (
@@ -104,8 +110,8 @@ export default async function ResourcesPage() {
       {/* Bible Study */}
       <section className="max-w-7xl mx-auto px-6 py-14 sm:py-20 text-center">
         <h2 className="section-title mb-4">Bible Study Guides</h2>
-        <div className="gold-underline mb-6" />
-        <p className="max-w-xl mx-auto mb-10 leading-relaxed" style={{ color: '#5c554c' }}>
+        <div className="title-underline mb-6" />
+        <p className="max-w-xl mx-auto mb-10 leading-relaxed" style={{ color: '#4f5d57' }}>
           Our Bible study materials are designed to help individuals and small groups go deeper into the Word of God, discover its truth, and apply it to everyday life.
         </p>
         <Link href="/contact" className="btn-primary">Request Study Materials</Link>

@@ -1,29 +1,24 @@
 import { getSermonRows } from '@/lib/resources'
-import { deleteSermon } from './actions'
+import { deleteSermon, updateSermon } from './actions'
+import EditDialog from './edit-dialog'
+import { SERMON_MESSAGES } from './messages'
 import SermonForm from './sermon-form'
 import ConfirmDelete from './confirm-delete'
-import { AddCard, MoveButtons, MUTED, NotSetUp, Notice, SectionHeader, cardStyle } from './admin-ui'
-
-const messages: Record<string, [boolean, string]> = {
-  added: [true, 'Sermon added to the Resources page.'],
-  deleted: [true, 'Sermon removed.'],
-  missing: [false, 'Please enter a title for the sermon.'],
-  badlink: [false, 'That doesn’t look like an Audiomack sermon link. Open the sermon on Audiomack, tap Share → Copy link, and paste it.'],
-  error: [false, 'Could not save the sermon. Please try again.'],
-}
+import { AddCard, MoveButtons, MUTED, NotSetUp, Notice, SectionHeader, TextField, cardStyle } from './admin-ui'
 
 export default async function SermonsSection({ status }: { status?: string }) {
   const sermons = await getSermonRows()
-  const msg = status ? messages[status] : undefined
+  const msg = status ? SERMON_MESSAGES[status] : undefined
 
   return (
     <div className="mb-16">
       <SectionHeader
         id="sermons"
         title="Audio Sermons"
-        hint="Sermons from Audiomack, shown on the Resources page in this order."
+        hint="Sermons from Audiomack, shown on the Resources page in this order; the first one plays on the homepage."
       />
-      {msg && <Notice ok={msg[0]}>{msg[1]}</Notice>}
+      {/* Successes show as a pop-up; errors also stay here, next to the form. */}
+      {msg && !msg[0] && <Notice ok={false}>{msg[1]}</Notice>}
 
       {sermons === null ? (
         <NotSetUp what="Audio sermons" />
@@ -58,6 +53,10 @@ export default async function SermonsSection({ status }: { status?: string }) {
                     </a>
                   </div>
                   <MoveButtons table="sermons" id={s.id} index={i} count={sermons.length} />
+                  <EditDialog title="Edit sermon" action={updateSermon} hidden={{ id: s.id }}>
+                    <TextField label="Sermon title" name="title" defaultValue={s.title} required />
+                    <TextField label="Audiomack link" name="audiomack_url" type="url" defaultValue={s.audiomack_url} required />
+                  </EditDialog>
                   <ConfirmDelete
                     action={deleteSermon}
                     fields={{ id: s.id }}

@@ -7,12 +7,12 @@ export default function ContactPage() {
     <>
       <section
         className="relative flex items-center justify-center text-white text-center px-6 py-14 sm:py-20 lg:py-28"
-        style={{ background: 'linear-gradient(160deg, var(--brand-dark) 0%, #96700f 100%)' }}
+        style={{ background: 'linear-gradient(160deg, var(--brand-dark) 0%, #0e5a45 100%)' }}
       >
         <div className="relative z-10">
           <p className="text-xs tracking-[4px] uppercase font-bold mb-4" style={{ color: 'var(--gold-light)' }}>Get In Touch</p>
           <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold mb-4">Contact Us</h1>
-          <div className="w-16 h-1 mx-auto" style={{ background: 'var(--gold)' }} />
+          <div className="w-16 h-1 mx-auto" style={{ background: 'var(--brand-soft)' }} />
         </div>
       </section>
       <div className="gold-bar" />
@@ -23,7 +23,7 @@ export default function ContactPage() {
           {/* Contact Info */}
           <div>
             <h2 className="section-title mb-6">We'd Love to Hear From You</h2>
-            <p className="leading-relaxed mb-10" style={{ color: '#5c554c' }}>
+            <p className="leading-relaxed mb-10" style={{ color: '#4f5d57' }}>
               Whether you have a prayer request, want to partner with us, or simply want to know more about GPM, we are here for you. Reach out to us through any of the channels below.
             </p>
             <div className="space-y-6">
@@ -41,8 +41,8 @@ export default function ContactPage() {
                     {c.icon}
                   </div>
                   <div>
-                    <p className="text-xs font-bold tracking-widest uppercase mb-1" style={{ color: 'var(--gold-dark)' }}>{c.label}</p>
-                    <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: '#5c554c' }}>{c.value}</p>
+                    <p className="text-xs font-bold tracking-widest uppercase mb-1" style={{ color: 'var(--brand-main)' }}>{c.label}</p>
+                    <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: '#4f5d57' }}>{c.value}</p>
                   </div>
                 </div>
               ))}
@@ -50,7 +50,7 @@ export default function ContactPage() {
 
             {/* Social */}
             <div className="mt-10">
-              <p className="text-xs font-bold tracking-widest uppercase mb-4" style={{ color: 'var(--gold-dark)' }}>Follow Us</p>
+              <p className="text-xs font-bold tracking-widest uppercase mb-4" style={{ color: 'var(--brand-main)' }}>Follow Us</p>
               <div className="flex flex-wrap gap-3">
                 {socialLinks.filter((s) => s.href).map((s) => (
                   <a
@@ -69,7 +69,7 @@ export default function ContactPage() {
           </div>
 
           {/* Contact Form */}
-          <div className="bg-white rounded-2xl shadow-xl p-5 sm:p-8 lg:p-10" style={{ border: '1px solid rgba(150,112,15,0.1)' }}>
+          <div className="bg-white rounded-2xl shadow-xl p-5 sm:p-8 lg:p-10" style={{ border: '1px solid rgba(14,90,69,0.1)' }}>
             <h3 className="font-heading text-2xl font-bold mb-6" style={{ color: 'var(--brand-dark)' }}>Send Us a Message</h3>
             <form className="space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -79,7 +79,7 @@ export default function ContactPage() {
                     type="text"
                     placeholder="John"
                     className="w-full px-4 py-3 rounded-lg text-sm outline-none transition-shadow focus:ring-2"
-                    style={{ border: '1px solid rgba(150,112,15,0.2)', background: 'var(--brand-pale)', '--tw-ring-color': 'var(--gold)' } as React.CSSProperties}
+                    style={{ border: '1px solid rgba(14,90,69,0.2)', background: 'var(--paper)', '--tw-ring-color': 'var(--gold)' } as React.CSSProperties}
                   />
                 </div>
                 <div>
@@ -88,7 +88,7 @@ export default function ContactPage() {
                     type="text"
                     placeholder="Mensah"
                     className="w-full px-4 py-3 rounded-lg text-sm outline-none"
-                    style={{ border: '1px solid rgba(150,112,15,0.2)', background: 'var(--brand-pale)' }}
+                    style={{ border: '1px solid rgba(14,90,69,0.2)', background: 'var(--paper)' }}
                   />
                 </div>
               </div>
@@ -98,14 +98,14 @@ export default function ContactPage() {
                   type="email"
                   placeholder="john@example.com"
                   className="w-full px-4 py-3 rounded-lg text-sm outline-none"
-                  style={{ border: '1px solid rgba(150,112,15,0.2)', background: 'var(--brand-pale)' }}
+                  style={{ border: '1px solid rgba(14,90,69,0.2)', background: 'var(--paper)' }}
                 />
               </div>
               <div>
                 <label className="block text-xs font-bold tracking-wide uppercase mb-2" style={{ color: 'var(--brand-dark)' }}>Subject</label>
                 <select
                   className="w-full px-4 py-3 rounded-lg text-sm outline-none"
-                  style={{ border: '1px solid rgba(150,112,15,0.2)', background: 'var(--brand-pale)', color: '#5c554c' }}
+                  style={{ border: '1px solid rgba(14,90,69,0.2)', background: 'var(--paper)', color: '#4f5d57' }}
                 >
                   <option value="">Select a subject</option>
                   <option>Partnership Enquiry</option>
@@ -121,7 +121,7 @@ export default function ContactPage() {
                   rows={5}
                   placeholder="Your message here..."
                   className="w-full px-4 py-3 rounded-lg text-sm outline-none resize-none"
-                  style={{ border: '1px solid rgba(150,112,15,0.2)', background: 'var(--brand-pale)' }}
+                  style={{ border: '1px solid rgba(14,90,69,0.2)', background: 'var(--paper)' }}
                 />
               </div>
               <button

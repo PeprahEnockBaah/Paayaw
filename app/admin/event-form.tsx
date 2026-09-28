@@ -3,8 +3,8 @@
 import { useRef } from 'react'
 import { useFormStatus } from 'react-dom'
 import { createEvent } from './actions'
+import { EVENT_TAGS } from '@/lib/event-tags'
 
-const TAGS = ['Conference', 'Special Service', 'Celebration', 'Outreach', 'Youth', 'Other']
 
 function SubmitButton() {
   const { pending } = useFormStatus()
@@ -15,7 +15,7 @@ function SubmitButton() {
   )
 }
 
-const inputStyle = { borderColor: 'rgba(150,112,15,0.2)', color: '#2b2620' } as const
+const inputStyle = { borderColor: 'rgba(14,90,69,0.2)', color: '#1c2a25' } as const
 const inputClass = 'w-full px-4 py-2.5 rounded-lg border outline-none focus:ring-2'
 
 export default function EventForm() {
@@ -60,7 +60,7 @@ export default function EventForm() {
             Category
           </label>
           <select name="tag" defaultValue="Conference" className={inputClass} style={inputStyle}>
-            {TAGS.map((t) => (
+            {EVENT_TAGS.map((t) => (
               <option key={t} value={t}>
                 {t}
               </option>

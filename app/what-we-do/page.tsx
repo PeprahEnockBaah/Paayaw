@@ -3,29 +3,31 @@ import Link from 'next/link'
 
 export const metadata = { title: 'What We Do – Gideon Peprah Ministries' }
 
+// The four areas named in the Prophet's welcome message. Descriptions are general
+// placeholders: replace them with the ministry's actual programmes and details.
 const ministries = [
   {
-    icon: '📖',
-    title: 'Evangelism & Church Planting',
-    body: 'We are actively planting churches and conducting evangelism campaigns in unreached communities across the nation and beyond, bringing the saving message of Jesus Christ to every corner.',
-    img: '/images/V_169.jpg',
-  },
-  {
-    icon: '🏫',
-    title: 'Education & Youth Development',
-    body: 'GPM invests in the next generation through educational scholarships, school renovation projects, and youth discipleship programs that equip young people for life and ministry.',
+    icon: '🌱',
+    title: 'Youth Empowerment',
+    body: 'We invest in young people — nurturing their faith, helping them discover their gifts, and giving them the direction and skills to fulfill their God-given destinies.',
     img: '/images/V_171.jpg',
   },
   {
+    icon: '🤝',
+    title: 'Community Involvement',
+    body: 'We stand with the communities we serve, taking an active part in their life and growth and showing the love of Christ in practical, everyday ways.',
+    img: '/images/V_61.jpg',
+  },
+  {
     icon: '🤲',
-    title: 'Community Outreach',
-    body: 'Through our "Remember Them" initiative, we reach out to the vulnerable, the poor, and the marginalized with food, medical care, and the love of Christ in practical action.',
+    title: 'Humanitarian Works',
+    body: 'We reach out to the needy, the vulnerable and those in crisis with practical help and care, bringing hope to the hopeless in the name of Jesus.',
     img: '/images/V_196.jpg',
   },
   {
-    icon: '🎙️',
-    title: 'Teaching & Discipleship',
-    body: 'We produce books, audio messages, and video teachings that build up believers in their faith, equipping them to live for God in every area of their lives.',
+    icon: '❤️',
+    title: 'Philanthropy',
+    body: 'Through generous giving and partnership, we support people and causes in need, so that the blessings God gives us flow on to others.',
     img: '/images/V_187.jpg',
   },
 ]
@@ -35,22 +37,24 @@ export default function WhatWeDoPage() {
     <>
       <section
         className="relative flex items-center justify-center text-white text-center px-6 py-14 sm:py-20 lg:py-28"
-        style={{ background: 'linear-gradient(160deg, var(--brand-dark) 0%, #96700f 100%)' }}
+        style={{ background: 'linear-gradient(160deg, var(--brand-dark) 0%, #0e5a45 100%)' }}
       >
         <div className="relative z-10">
           <p className="text-xs tracking-[4px] uppercase font-bold mb-4" style={{ color: 'var(--gold-light)' }}>Our Mission in Action</p>
           <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold mb-4">What We Do</h1>
-          <div className="w-16 h-1 mx-auto" style={{ background: 'var(--gold)' }} />
+          <div className="w-16 h-1 mx-auto" style={{ background: 'var(--brand-soft)' }} />
         </div>
       </section>
       <div className="gold-bar" />
 
       <section className="max-w-7xl mx-auto px-6 py-14 sm:py-20">
         <div className="text-center mb-16 max-w-2xl mx-auto">
-          <h2 className="section-title mb-4">Kingdom Work in Every Sphere</h2>
-          <div className="gold-underline mb-6" />
-          <p className="leading-relaxed" style={{ color: '#5c554c' }}>
-            GPM is committed to the holistic transformation of individuals and communities through the Word of God. Our ministry encompasses evangelism, education, compassion, and discipleship.
+          <h2 className="section-title mb-4">The Gospel for Soul and Society</h2>
+          <div className="title-underline mb-6" />
+          <p className="leading-relaxed" style={{ color: '#4f5d57' }}>
+            Alongside preaching the Gospel of Jesus Christ, we are committed to youth empowerment, community
+            involvement, humanitarian and philanthropy works — because the Gospel must touch both the soul and the
+            society.
           </p>
         </div>
 
@@ -64,7 +68,7 @@ export default function WhatWeDoPage() {
                   {m.icon}
                 </div>
                 <h3 className="font-heading text-3xl font-bold mb-4" style={{ color: 'var(--brand-dark)' }}>{m.title}</h3>
-                <p className="text-base leading-[1.85]" style={{ color: '#5c554c' }}>{m.body}</p>
+                <p className="text-base leading-[1.85]" style={{ color: '#4f5d57' }}>{m.body}</p>
               </div>
               <div style={{ direction: 'ltr' }}>
                 <FitImage
@@ -80,11 +84,11 @@ export default function WhatWeDoPage() {
       </section>
 
       {/* CTA */}
-      <section style={{ background: 'var(--brand-pale)' }} className="py-14 sm:py-20 px-6 text-center">
+      <section className="bg-paper py-14 sm:py-20 px-6 text-center">
         <div className="max-w-xl mx-auto">
           <h2 className="section-title mb-4">Partner With Us</h2>
-          <div className="gold-underline mb-6" />
-          <p className="mb-8 leading-relaxed" style={{ color: '#5c554c' }}>
+          <div className="title-underline mb-6" />
+          <p className="mb-8 leading-relaxed" style={{ color: '#4f5d57' }}>
             Your partnership enables us to continue this vital work. Join us as we advance the Kingdom of God together.
           </p>
           <Link href="/get-involved" className="btn-primary">Become a Partner</Link>

@@ -99,7 +99,7 @@ export default function Navbar() {
   return (
     <>
       {/* Top social bar */}
-      <div className="bg-brand-main text-white">
+      <div className="bg-brand-dark text-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
           <SocialIcons />
           <span className="hidden sm:block text-sm font-semibold tracking-wide text-white/85">
@@ -118,7 +118,7 @@ export default function Navbar() {
             {/* Logo */}
             <Link href="/" className="flex-shrink-0">
               <Image
-                src="/images/logo-gold.png"
+                src="/images/logo-green.png"
                 alt="Gideon Peprah Ministries"
                 width={1131}
                 height={400}
@@ -148,7 +148,7 @@ export default function Navbar() {
                     <Link
                       href={item.href}
                       className={`block px-3 py-2 text-[16px] font-semibold transition-colors ${
-                        isActive(item.href) ? 'text-brand-dark underline underline-offset-8 decoration-2 decoration-gold-light' : 'text-brand-main hover:text-brand-dark'
+                        isActive(item.href) ? 'text-brand-dark underline underline-offset-8 decoration-2 decoration-gold' : 'text-brand-main hover:text-brand-dark'
                       }`}
                     >
                       {item.label}
@@ -159,7 +159,7 @@ export default function Navbar() {
               <li className="relative ml-3">
                 <button
                   onClick={() => toggle(getInvolved.label)}
-                  className="flex items-center gap-1.5 px-6 py-3 rounded-full bg-brand-main text-white text-[16px] font-bold transition-colors hover:bg-brand-dark"
+                  className="flex items-center gap-1.5 px-6 py-3 rounded-full bg-gradient-to-b from-gold-light to-gold text-brand-dark shadow-md hover:brightness-105 hover:shadow-lg text-[16px] font-bold transition-all"
                 >
                   {getInvolved.label}
                   <Chevron open={openDropdown === getInvolved.label} />
@@ -210,7 +210,7 @@ export default function Navbar() {
                         mobileExpanded === item.label ? 'max-h-60 opacity-100' : 'max-h-0 opacity-0'
                       }`}
                     >
-                      <div className="ml-4 mt-1 space-y-1 border-l-2 border-gold-light pl-3">
+                      <div className="ml-4 mt-1 space-y-1 border-l-2 border-gold pl-3">
                         {item.children.map((child) => (
                           <Link
                             key={child.href}

@@ -8,8 +8,14 @@ export type Slide = {
   alt: string
   /** Wide designed banner: fills the frame on large screens, shown whole on smaller ones. */
   banner: boolean
+  /** Optional button over the slide, e.g. "Order Now" on a book. Shown only when button_url is set. */
+  button_label?: string | null
+  button_url?: string | null
   position: number
 }
+
+/** Text for a slide's button when none is given. */
+export const DEFAULT_SLIDE_BUTTON = 'Order Now'
 
 /**
  * Built-in slides, shown when the database can't be reached or has no slides,
@@ -37,7 +43,7 @@ export async function getSlideRows(): Promise<Slide[] | null> {
   try {
     const { data, error } = await supabaseAdmin()
       .from('slides')
-      .select('id, image_url, alt, banner, position')
+      .select('*')
       .order('position', { ascending: true })
       .order('created_at', { ascending: true })
     if (error) throw error

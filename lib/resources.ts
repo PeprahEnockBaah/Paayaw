@@ -18,6 +18,8 @@ export type Book = {
   description: string
   image_url: string
   link_url: string | null
+  /** Price in pesewas; books with a price can be ordered on /order. */
+  price_minor?: number | null
   position: number
 }
 
@@ -63,7 +65,7 @@ export const DEFAULT_BOOKS: Book[] = [
   { title: 'Daily Strength Devotional', category: 'Devotionals', image_url: '/images/V_202.jpg', description: '365 days of Spirit-filled devotions to fuel your walk with God every single day.' },
 ].map((b, i) => ({ id: `default-${i}`, link_url: null, position: i + 1, ...b }))
 
-async function readTable<T>(table: 'sermons' | 'books', columns: string): Promise<T[] | null> {
+async function readTable<T>(table: 'sermons' | 'books', columns = '*'): Promise<T[] | null> {
   try {
     const { data, error } = await supabaseAdmin()
       .from(table)
@@ -79,8 +81,8 @@ async function readTable<T>(table: 'sermons' | 'books', columns: string): Promis
 
 /** Rows from the database in display order, or null if the table can't be read. */
 export const getSermonRows = () => readTable<Sermon>('sermons', 'id, title, audiomack_url, position')
-export const getBookRows = () =>
-  readTable<Book>('books', 'id, title, category, description, image_url, link_url, position')
+// All columns, so the site keeps working before optional columns (like price) are added.
+export const getBookRows = () => readTable<Book>('books')
 
 /** Lists for the public site, falling back to the built-in content. */
 export async function getSermons() {
@@ -91,4 +93,23 @@ export async function getSermons() {
 export async function getBooks() {
   const rows = await getBookRows()
   return rows && rows.length > 0 ? rows : DEFAULT_BOOKS
+}
+
+/** Books that can be ordered on the website (those with a price), in display order. */
+export async function getOrderableBooks() {
+  const rows = await getBookRows()
+  return (rows || []).filter((b) => b.price_minor && b.price_minor > 0)
+}
+
+/** One orderable book, or null if it doesn't exist or has no price. */
+export async function getOrderableBook(id: string): Promise<Book | null> {
+  if (!/^[0-9a-f-]{36}$/i.test(id)) return null
+  try {
+    const { data, error } = await supabaseAdmin().from('books').select('*').eq('id', id).maybeSingle()
+    if (error) throw error
+    const book = data as Book | null
+    return book?.price_minor && book.price_minor > 0 ? book : null
+  } catch {
+    return null
+  }
 }

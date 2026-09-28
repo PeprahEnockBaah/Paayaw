@@ -45,6 +45,10 @@ create table if not exists public.slides (
 
 alter table public.slides enable row level security;
 
+-- Optional button on a slide (e.g. "Order Now" on a book banner); shown only when button_url is set.
+alter table public.slides add column if not exists button_label text;
+alter table public.slides add column if not exists button_url   text;
+
 -- 4. Public storage bucket for uploaded slider images
 insert into storage.buckets (id, name, public)
 values ('slider-images', 'slider-images', true)
@@ -106,6 +110,9 @@ create table if not exists public.books (
 
 alter table public.books enable row level security;
 
+-- Price in pesewas (GHS × 100). Books with a price can be ordered on the website's /order page.
+alter table public.books add column if not exists price_minor integer check (price_minor > 0);
+
 -- Public storage bucket for uploaded book covers
 insert into storage.buckets (id, name, public)
 values ('book-images', 'book-images', true)
@@ -138,3 +145,70 @@ create table if not exists public.login_attempts (
 create index if not exists login_attempts_ip_time on public.login_attempts (ip_hash, created_at);
 
 alter table public.login_attempts enable row level security;
+
+-- ============================================================
+-- Online giving (Paystack)
+-- Each gift is recorded as 'pending' when the donor is sent to
+-- Paystack, then updated from Paystack's confirmation.
+-- ============================================================
+
+-- 9. Donations
+-- amount_minor / currency: what Paystack actually charged (smallest unit: pesewas or cents).
+-- donor_amount_minor / donor_currency: what the donor chose (e.g. EUR, which Paystack
+-- can't charge, so it is converted at fx_rate).
+create table if not exists public.donations (
+  id                  uuid primary key default gen_random_uuid(),
+  created_at          timestamptz not null default now(),
+  reference           text not null unique,
+  amount_minor        integer not null check (amount_minor > 0),
+  currency            text not null default 'GHS',
+  donor_amount_minor  integer,
+  donor_currency      text,
+  fx_rate             numeric,
+  giving_type         text not null,
+  name                text not null,
+  email               text not null,
+  phone               text,
+  message             text,
+  status              text not null default 'pending',
+  channel             text,
+  paid_at             timestamptz
+);
+
+create index if not exists donations_created_at on public.donations (created_at desc);
+
+alter table public.donations enable row level security;
+
+-- ============================================================
+-- Book orders (Paystack)
+-- Recorded as 'pending' when the buyer is sent to Paystack, then
+-- updated from Paystack's confirmation. fulfilled_at is set from
+-- the admin page once the book is sent or collected.
+-- ============================================================
+
+create table if not exists public.book_orders (
+  id                  uuid primary key default gen_random_uuid(),
+  created_at          timestamptz not null default now(),
+  reference           text not null unique,
+  book_id             uuid references public.books (id) on delete set null,
+  book_title          text not null,
+  unit_price_minor    integer not null check (unit_price_minor > 0),
+  quantity            integer not null check (quantity > 0),
+  delivery_fee_minor  integer not null default 0,
+  amount_minor        integer not null check (amount_minor > 0),
+  currency            text not null default 'GHS',
+  name                text not null,
+  email               text not null,
+  phone               text not null,
+  fulfilment          text not null check (fulfilment in ('delivery', 'pickup')),
+  address             text,
+  note                text,
+  status              text not null default 'pending',
+  channel             text,
+  paid_at             timestamptz,
+  fulfilled_at        timestamptz
+);
+
+create index if not exists book_orders_created_at on public.book_orders (created_at desc);
+
+alter table public.book_orders enable row level security;

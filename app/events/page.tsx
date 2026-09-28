@@ -11,14 +11,14 @@ export default async function EventsPage() {
     <>
       <section
         className="relative flex items-center justify-center text-white text-center px-6 py-14 sm:py-20 lg:py-28"
-        style={{ background: 'linear-gradient(160deg, var(--brand-dark) 0%, #96700f 100%)' }}
+        style={{ background: 'linear-gradient(160deg, var(--brand-dark) 0%, #0e5a45 100%)' }}
       >
         <div className="relative z-10">
           <p className="text-xs tracking-[4px] uppercase font-bold mb-4" style={{ color: 'var(--gold-light)' }}>
             What's Coming Up
           </p>
           <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold mb-4">Events</h1>
-          <div className="w-16 h-1 mx-auto" style={{ background: 'var(--gold)' }} />
+          <div className="w-16 h-1 mx-auto" style={{ background: 'var(--brand-soft)' }} />
         </div>
       </section>
       <div className="gold-bar" />
@@ -29,7 +29,7 @@ export default async function EventsPage() {
             <h3 className="font-heading text-2xl font-bold mb-3" style={{ color: 'var(--brand-dark)' }}>
               No Upcoming Events
             </h3>
-            <p className="text-sm" style={{ color: '#6f675c' }}>
+            <p className="text-sm" style={{ color: '#66736d' }}>
               Check back soon — new events will be posted here.
             </p>
           </div>
@@ -41,7 +41,7 @@ export default async function EventsPage() {
                 <div
                   key={e.id}
                   className="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col sm:flex-row transition-shadow hover:shadow-lg"
-                  style={{ border: '1px solid rgba(150,112,15,0.1)' }}
+                  style={{ border: '1px solid rgba(14,90,69,0.1)' }}
                 >
                   {/* Date block */}
                   <div
@@ -49,7 +49,7 @@ export default async function EventsPage() {
                     style={{ background: 'var(--brand-dark)', minWidth: '110px' }}
                   >
                     <span className="text-4xl font-black font-heading leading-none">{d.day}</span>
-                    <span className="text-sm font-bold tracking-widest uppercase mt-1" style={{ color: 'var(--gold-light)' }}>
+                    <span className="text-sm font-bold tracking-widest uppercase mt-1" style={{ color: 'var(--brand-soft)' }}>
                       {d.month}
                     </span>
                     <span className="text-xs opacity-60 mt-0.5">{d.year}</span>
@@ -75,13 +75,13 @@ export default async function EventsPage() {
                       )}
                     </div>
                     {(e.location || e.time) && (
-                      <div className="flex flex-wrap gap-x-6 gap-y-1 mb-3 text-sm" style={{ color: '#6f675c' }}>
+                      <div className="flex flex-wrap gap-x-6 gap-y-1 mb-3 text-sm" style={{ color: '#66736d' }}>
                         {e.location && <span>📍 {e.location}</span>}
                         {e.time && <span>🕐 {e.time}</span>}
                       </div>
                     )}
                     {e.description && (
-                      <p className="text-sm leading-relaxed" style={{ color: '#6f675c' }}>{e.description}</p>
+                      <p className="text-sm leading-relaxed" style={{ color: '#66736d' }}>{e.description}</p>
                     )}
                     <Link
                       href="/contact"
@@ -97,11 +97,11 @@ export default async function EventsPage() {
           </div>
         )}
 
-        <div className="text-center mt-16 p-10 rounded-2xl" style={{ background: 'var(--brand-pale)' }}>
+        <div className="text-center mt-16 p-10 rounded-2xl bg-paper">
           <h3 className="font-heading text-2xl font-bold mb-3" style={{ color: 'var(--brand-dark)' }}>
             Don't Miss an Event
           </h3>
-          <p className="text-sm mb-6" style={{ color: '#6f675c' }}>
+          <p className="text-sm mb-6" style={{ color: '#66736d' }}>
             Subscribe to our newsletter to stay informed about upcoming events, services, and ministry updates.
           </p>
           <Link href="/contact" className="btn-primary">Contact Us to Stay Connected</Link>

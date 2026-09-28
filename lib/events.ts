@@ -31,16 +31,16 @@ export function splitDate(d: string) {
 }
 
 /**
- * Fetch all events ordered by date. Returns [] (instead of throwing) when
+ * Fetch all events: by date (public page) or latest added first (admin). Returns [] (instead of throwing) when
  * Supabase isn't configured yet, so the site still renders before setup.
  */
-export async function getEvents(): Promise<EventRow[]> {
+export async function getEvents(order: 'date' | 'newest' = 'date'): Promise<EventRow[]> {
   try {
     const supabase = supabaseAdmin()
     const { data, error } = await supabase
       .from('events')
       .select('*')
-      .order('event_date', { ascending: true })
+      .order(order === 'date' ? 'event_date' : 'created_at', { ascending: order === 'date' })
     if (error) throw error
     return (data as EventRow[]) ?? []
   } catch {

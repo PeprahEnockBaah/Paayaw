@@ -1,29 +1,26 @@
 import { getBookRows } from '@/lib/resources'
-import { deleteBook } from './actions'
+import { formatMoney } from '@/lib/giving'
+import { deleteBook, updateBook } from './actions'
+import EditDialog from './edit-dialog'
+import { BOOK_MESSAGES } from './messages'
+import { BOOK_CATEGORIES } from '@/lib/book-categories'
 import BookForm from './book-form'
 import ConfirmDelete from './confirm-delete'
-import { AddCard, MoveButtons, MUTED, NotSetUp, Notice, SectionHeader, cardStyle } from './admin-ui'
-
-const messages: Record<string, [boolean, string]> = {
-  added: [true, 'Book added to the Resources page.'],
-  deleted: [true, 'Book removed.'],
-  missing: [false, 'Please enter a title and choose a cover image.'],
-  badlink: [false, 'The “Get a Copy” link isn’t a valid web address. Leave it empty or paste the full link.'],
-  error: [false, 'Could not save the book. Please try again.'],
-}
+import { AddCard, ImageField, MoveButtons, MUTED, NotSetUp, Notice, SectionHeader, SelectField, TextArea, TextField, cardStyle } from './admin-ui'
 
 export default async function BooksSection({ status }: { status?: string }) {
   const books = await getBookRows()
-  const msg = status ? messages[status] : undefined
+  const msg = status ? BOOK_MESSAGES[status] : undefined
 
   return (
     <div className="mb-16">
       <SectionHeader
         id="books"
         title="Books & Devotionals"
-        hint="Shown on the Resources page in this order."
+        hint="Shown on the Resources page in this order; new books go first."
       />
-      {msg && <Notice ok={msg[0]}>{msg[1]}</Notice>}
+      {/* Successes show as a pop-up; errors also stay here, next to the form. */}
+      {msg && !msg[0] && <Notice ok={false}>{msg[1]}</Notice>}
 
       {books === null ? (
         <NotSetUp what="Books" />
@@ -49,10 +46,28 @@ export default async function BooksSection({ status }: { status?: string }) {
                       {b.title}
                     </p>
                     <p className="text-xs truncate" style={{ color: MUTED }}>
-                      {b.category} · {b.link_url ? 'Links to store' : 'Request a Copy via Contact'}
+                      {b.category} ·{' '}
+                      {b.price_minor
+                        ? `${formatMoney(b.price_minor / 100, 'GHS')} · Order online`
+                        : b.link_url
+                          ? 'Links to store'
+                          : 'Request a Copy via Contact'}
                     </p>
                   </div>
                   <MoveButtons table="books" id={b.id} index={i} count={books.length} />
+                  <EditDialog title="Edit book" action={updateBook} hidden={{ id: b.id, image_url: b.image_url }}>
+                    <TextField label="Title" name="title" defaultValue={b.title} required />
+                    <SelectField label="Category" name="category" defaultValue={b.category} options={BOOK_CATEGORIES} />
+                    <ImageField label="Cover image" currentUrl={b.image_url} />
+                    <TextField label="“Get a Copy” link (optional)" name="link_url" defaultValue={b.link_url} placeholder="e.g. Amazon or store link" />
+                    <TextField
+                      label="Price in cedis (optional; with a price it can be ordered online)"
+                      name="price"
+                      defaultValue={b.price_minor ? String(b.price_minor / 100) : ''}
+                      placeholder="e.g. 50"
+                    />
+                    <TextArea label="Short description" name="description" defaultValue={b.description} rows={2} />
+                  </EditDialog>
                   <ConfirmDelete
                     action={deleteBook}
                     fields={{ id: b.id, image_url: b.image_url }}

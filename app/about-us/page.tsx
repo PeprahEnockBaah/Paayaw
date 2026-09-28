@@ -16,14 +16,14 @@ export default function AboutPage() {
       {/* Page Hero */}
       <section
         className="relative flex items-center justify-center text-white text-center px-6 py-14 sm:py-20 lg:py-28"
-        style={{ background: 'linear-gradient(160deg, #5c440c 0%, #4a370a 100%)' }}
+        style={{ background: 'linear-gradient(160deg, #072e24 0%, #051f19 100%)' }}
       >
         <div className="absolute inset-0 opacity-10"
           style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23e8c35a' fill-rule='evenodd'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4z'/%3E%3C/g%3E%3C/svg%3E")` }} />
         <div className="relative z-10">
           <p className="text-xs tracking-[4px] uppercase font-bold mb-4" style={{ color: 'var(--gold-light)' }}>Our Story</p>
           <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold mb-4">About Us</h1>
-          <div className="w-16 h-1 mx-auto" style={{ background: 'var(--gold)' }} />
+          <div className="w-16 h-1 mx-auto" style={{ background: 'var(--brand-soft)' }} />
         </div>
       </section>
       <div className="gold-bar" />
@@ -54,11 +54,11 @@ export default function AboutPage() {
       </section>
 
       {/* Statements of Faith */}
-      <section id="faith" className="py-14 sm:py-20 px-6 bg-brand-pale">
+      <section id="faith" className="py-14 sm:py-20 px-6 bg-paper">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="section-title">Statements of Faith</h2>
-            <div className="gold-underline" />
+            <div className="title-underline" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[
@@ -82,7 +82,7 @@ export default function AboutPage() {
       <section id="prophet" className="max-w-7xl mx-auto px-6 py-14 sm:py-24">
         <div className="text-center mb-14">
           <h2 className="section-title">The Prophet</h2>
-          <div className="gold-underline" />
+          <div className="title-underline" />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="relative flex justify-center">
@@ -97,7 +97,7 @@ export default function AboutPage() {
           </div>
           <div>
             <h3 className="font-heading text-3xl font-bold mb-2 text-brand-main">Prophet Gideon Peprah</h3>
-            <p className="text-sm font-bold tracking-widest uppercase mb-6 text-gold" style={{ color: 'var(--gold)' }}>Founder &amp; President, GPM</p>
+            <p className="text-sm font-bold tracking-widest uppercase mb-6 text-brand-main">Founder &amp; President, GPM</p>
             <div className="space-y-4 leading-[1.85] text-ink-muted">
               <p>Prophet Gideon Peprah is a man of deep faith and unwavering commitment to the Word of God. Called by God from a young age, he has devoted his life to the proclamation of the Gospel and the building of God's Kingdom on earth.</p>
               <p>With decades of ministry experience spanning evangelism, church planting, and community development, Prophet Gideon carries a burning passion to see the Body of Christ mobilised and prepared for the second coming of Jesus Christ.</p>
@@ -113,7 +113,7 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-14">
             <h2 className="font-heading text-4xl font-bold text-white mb-3">Governing Council &amp; Leadership</h2>
-            <div className="w-16 h-1 mx-auto" style={{ background: 'var(--gold)' }} />
+            <div className="w-16 h-1 mx-auto" style={{ background: 'var(--brand-soft)' }} />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {leaders.map((l) => (

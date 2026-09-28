@@ -2,7 +2,11 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import Image from 'next/image'
-import type { Slide } from '@/lib/slides'
+import { DEFAULT_SLIDE_BUTTON, type Slide } from '@/lib/slides'
+
+/** How long each slide shows; slides with a button stay longer so it can be tapped. */
+const SLIDE_MS = 4000
+const BUTTON_SLIDE_MS = 8000
 
 export default function ImageSlider({
   slides,
@@ -34,11 +38,12 @@ export default function ImageSlider({
     goToSlide((currentSlide - 1 + slides.length) % slides.length, 'prev')
   }, [currentSlide, goToSlide])
 
+  const current = slides[currentSlide]
   useEffect(() => {
     if (!isAutoPlay) return
-    const interval = setInterval(goToNext, 4000)
-    return () => clearInterval(interval)
-  }, [isAutoPlay, goToNext])
+    const timer = setTimeout(goToNext, current?.button_url ? BUTTON_SLIDE_MS : SLIDE_MS)
+    return () => clearTimeout(timer)
+  }, [isAutoPlay, goToNext, current])
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX
@@ -112,6 +117,37 @@ export default function ImageSlider({
                 sizes="100vw"
               />
             </div>
+          )
+        })}
+
+        {/* Button for the current slide (e.g. "Order Now" on a book), only when it has a link */}
+        {slides.map((slide, index) => {
+          if (!slide.button_url) return null
+          const isActive = index === currentSlide
+          const external = /^https?:\/\//i.test(slide.button_url)
+          return (
+            <a
+              key={`btn-${slide.id}`}
+              href={slide.button_url}
+              {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+              aria-hidden={!isActive}
+              tabIndex={isActive ? 0 : -1}
+              onFocus={() => setIsAutoPlay(false)}
+              className="absolute left-1/2 bottom-12 sm:bottom-16 z-20 inline-flex items-center gap-2
+                px-5 py-2.5 sm:px-7 sm:py-3 rounded-full font-bold text-sm sm:text-base whitespace-nowrap
+                bg-gradient-to-b from-gold-light to-gold text-brand-dark shadow-lg ring-2 ring-white/70
+                hover:brightness-105 hover:shadow-xl transition-all duration-500"
+              style={{
+                opacity: isActive ? 1 : 0,
+                pointerEvents: isActive ? 'auto' : 'none',
+                transform: `translateX(-50%) translateY(${isActive ? 0 : 8}px)`,
+              }}
+            >
+              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+              </svg>
+              {slide.button_label || DEFAULT_SLIDE_BUTTON}
+            </a>
           )
         })}
 

@@ -14,7 +14,7 @@ function SubmitButton() {
   )
 }
 
-const inputStyle = { borderColor: 'rgba(150,112,15,0.2)', color: '#2b2620' } as const
+const inputStyle = { borderColor: 'rgba(14,90,69,0.2)', color: '#1c2a25' } as const
 const inputClass = 'w-full px-4 py-2.5 rounded-lg border outline-none focus:ring-2'
 const labelStyle = { color: 'var(--brand-dark)' } as const
 
@@ -67,6 +67,12 @@ export default function BookForm() {
           </label>
           <input name="link_url" placeholder="e.g. Amazon or store link" className={inputClass} style={inputStyle} />
         </div>
+        <div>
+          <label className="block text-xs font-bold mb-1" style={labelStyle}>
+            Price in cedis (optional)
+          </label>
+          <input name="price" inputMode="decimal" placeholder="e.g. 50" className={inputClass} style={inputStyle} />
+        </div>
       </div>
       <div>
         <label className="block text-xs font-bold mb-1" style={labelStyle}>
@@ -80,8 +86,9 @@ export default function BookForm() {
           style={inputStyle}
         />
       </div>
-      <p className="text-xs" style={{ color: '#6f675c' }}>
-        Without a link, the book shows a &ldquo;Request a Copy&rdquo; button that goes to the Contact page.
+      <p className="text-xs" style={{ color: '#66736d' }}>
+        With a price, the book can be ordered and paid for on the website&apos;s Order page. Otherwise it links
+        to the &ldquo;Get a Copy&rdquo; link, or to the Contact page if there&apos;s no link.
       </p>
       <SubmitButton />
     </form>

@@ -10,21 +10,26 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          dark: '#5c440c',
-          main: '#96700f',
-          light: '#d4af37',
-          pale: '#fbf5e6',
+          dark: '#072e24',
+          main: '#0e5a45',
+          light: '#3f9a7a',
+          pale: '#e8f2ee',
+          // Accent for text/lines on dark green backgrounds (gold, as on the flyers).
+          soft: '#f2d88c',
         },
-        // Amber-brown used for headings; `light` is a warm gold accent.
+        // Metallic gold from the ministry's flyers: main buttons, lines, borders, and
+        // labels on dark green (`light`). Avoid gold text on white (use `dark` if needed).
         gold: {
-          DEFAULT: '#955a00',
-          light: '#e8c35a',
-          dark: '#6e4200',
+          DEFAULT: '#d8b25b',
+          light: '#f2d88c',
+          dark: '#8a6a1f',
         },
+        // Warm off-white for alternating section backgrounds.
+        paper: '#faf7ee',
         ink: {
-          DEFAULT: '#2b2620',
-          muted: '#5c554c',
-          soft: '#6f675c',
+          DEFAULT: '#1c2a25',
+          muted: '#4f5d57',
+          soft: '#66736d',
         },
       },
       fontFamily: {

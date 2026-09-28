@@ -58,7 +58,7 @@ export default function ConfirmDelete({
           <h3 className="font-heading text-lg font-bold mb-2" style={{ color: 'var(--brand-dark)' }}>
             {title}
           </h3>
-          <p className="text-sm leading-relaxed mb-6" style={{ color: '#6f675c' }}>
+          <p className="text-sm leading-relaxed mb-6" style={{ color: '#66736d' }}>
             {message}
           </p>
 

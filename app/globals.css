@@ -5,13 +5,15 @@
 @tailwind utilities;
 
 :root {
-  --brand-dark: #5c440c;
-  --brand-main: #96700f;
-  --brand-light: #d4af37;
-  --brand-pale: #fbf5e6;
-  --gold: #955a00;
-  --gold-light: #e8c35a;
-  --gold-dark: #6e4200;
+  --brand-dark: #072e24;
+  --brand-main: #0e5a45;
+  --brand-light: #3f9a7a;
+  --brand-pale: #e8f2ee;
+  --brand-soft: #f2d88c;
+  --gold: #d8b25b;
+  --gold-light: #f2d88c;
+  --gold-dark: #8a6a1f;
+  --paper: #faf7ee;
 }
 
 html {
@@ -30,9 +32,19 @@ body {
   letter-spacing: -0.02em;
 }
 
+/* Page and section titles are always in capitals (sizes unchanged).
+   In the base layer so a heading can opt out with the `normal-case` class. */
+@layer base {
+  h1,
+  h2 {
+    text-transform: uppercase;
+  }
+}
+
 @layer components {
   .btn-primary {
-    @apply inline-block bg-brand-main text-white font-bold px-8 py-3.5 rounded-full transition-all duration-300 hover:bg-brand-dark hover:-translate-y-0.5 shadow-md hover:shadow-lg;
+    /* Metallic gold, like the pills on the ministry's flyers. */
+    @apply inline-block bg-gradient-to-b from-gold-light to-gold text-brand-dark font-bold px-8 py-3.5 rounded-full transition-all duration-300 hover:brightness-105 hover:-translate-y-0.5 shadow-md hover:shadow-lg;
   }
   .btn-outline-white {
     @apply inline-block border-2 border-white/70 text-white font-semibold px-8 py-3.5 rounded-full transition-all duration-300 hover:bg-white/15 hover:border-white;
@@ -41,14 +53,14 @@ body {
     @apply inline-block border-2 border-brand-main text-brand-main font-bold px-8 py-3.5 rounded-full transition-all duration-300 hover:bg-brand-main hover:text-white;
   }
   .section-title {
-    @apply font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gold mb-3;
+    @apply font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-main mb-3;
   }
-  .gold-underline {
-    @apply w-16 h-1 bg-gold-light mx-auto mt-2 rounded-full;
+  .title-underline {
+    @apply w-16 h-1 bg-brand-main mx-auto mt-2 rounded-full;
   }
   .gold-bar {
     @apply h-1 w-full;
-    background: linear-gradient(90deg, var(--brand-main), var(--gold-light), var(--brand-main));
+    background: linear-gradient(90deg, var(--brand-main), var(--gold), var(--brand-main));
   }
   .card-hover {
     @apply transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl;
@@ -72,7 +84,7 @@ body {
 }
 
 ::selection {
-  background: rgba(150,112,15, 0.25);
+  background: rgba(14,90,69, 0.25);
 }
 
 /* Admin confirmation popup */

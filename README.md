@@ -13,7 +13,7 @@ A full Next.js 14 website clone based on the EAM structure, rebranded for **Gide
 - `/what-we-do` – Ministry areas (evangelism, education, outreach, teaching)
 - `/events` – Upcoming events list
 - `/resources` – Books, audio sermons, Bible study guides
-- `/media` – News articles + Kingdom Revolution TV
+- `/media` – News articles + VALOR TV
 - `/contact` – Contact form + info
 - `/get-involved` – Partnership tiers + giving options
 
