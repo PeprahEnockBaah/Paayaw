@@ -11,7 +11,7 @@ export default async function SermonsSection({ status }: { status?: string }) {
   const msg = status ? SERMON_MESSAGES[status] : undefined
 
   return (
-    <div className="mb-16">
+    <div>
       <SectionHeader
         id="sermons"
         title="Audio Sermons"
@@ -24,7 +24,7 @@ export default async function SermonsSection({ status }: { status?: string }) {
         <NotSetUp what="Audio sermons" />
       ) : (
         <>
-          <AddCard title="Add a Sermon">
+          <AddCard title="Add a Sermon" open={!!msg && !msg[0]}>
             <SermonForm />
           </AddCard>
           {sermons.length === 0 ? (

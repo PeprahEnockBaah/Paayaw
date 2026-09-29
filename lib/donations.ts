@@ -1,6 +1,7 @@
 import { supabaseAdmin } from './supabase'
 import type { PaystackTransaction } from './paystack'
 import { DEFAULT_GIVING_TYPE } from './giving'
+import { sendDonationEmails } from './receipts'
 
 export type Donation = {
   id: string
@@ -19,6 +20,7 @@ export type Donation = {
   status: string
   channel: string | null
   paid_at: string | null
+  emailed_at: string | null
 }
 
 /**
@@ -87,6 +89,8 @@ export async function saveVerifiedTransaction(tx: PaystackTransaction, metadata?
     // A duplicate means the webhook and thank-you page raced; the other one saved it.
     if (insertError && insertError.code !== '23505') throw insertError
   }
+  // Receipt to the donor and notice to the Prophet (sent once, never throws).
+  if (tx.status === 'success') await sendDonationEmails(tx.reference)
 }
 
 /** Recent gifts for the admin page, or null if the table isn't set up. */

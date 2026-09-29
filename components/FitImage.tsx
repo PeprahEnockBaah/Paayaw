@@ -13,6 +13,7 @@ export default function FitImage({
   className = '',
   imgClassName = '',
   priority = false,
+  onError,
 }: {
   src: string
   alt: string
@@ -20,6 +21,8 @@ export default function FitImage({
   className?: string
   imgClassName?: string
   priority?: boolean
+  /** Only usable from client components. */
+  onError?: () => void
 }) {
   return (
     <div className={`relative overflow-hidden bg-black ${className}`}>
@@ -38,6 +41,7 @@ export default function FitImage({
         sizes={sizes}
         quality={90}
         priority={priority}
+        onError={onError}
         className={`object-contain ${imgClassName}`}
       />
     </div>

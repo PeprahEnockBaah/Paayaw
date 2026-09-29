@@ -13,11 +13,10 @@ export function Notice({ ok, children }: { ok: boolean; children: React.ReactNod
   )
 }
 
-/** Section heading with its anchor, used by the quick links at the top of the admin page. */
-export function SectionHeader({ id, title, hint }: { id: string; title: string; hint: string }) {
+/** Section heading at the top of an admin tab. */
+export function SectionHeader({ title, hint }: { id?: string; title: string; hint: string }) {
   return (
     <>
-      <span id={id} className="block scroll-mt-32" />
       <h2 className="font-heading text-2xl font-bold mb-1" style={{ color: 'var(--brand-dark)' }}>
         {title}
       </h2>
@@ -38,15 +37,27 @@ export function NotSetUp({ what }: { what: string }) {
   )
 }
 
-/** Card wrapping an "add" form. */
-export function AddCard({ title, children }: { title: string; children: React.ReactNode }) {
+/**
+ * Collapsible card wrapping an "add" form. Closed by default so the list is visible
+ * without scrolling; opens by itself when there's an error to fix.
+ */
+export function AddCard({ title, open, children }: { title: string; open?: boolean; children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-2xl shadow-sm p-5 sm:p-6 mb-6" style={cardStyle}>
-      <h3 className="font-heading text-lg font-bold mb-4" style={{ color: 'var(--brand-dark)' }}>
-        {title}
-      </h3>
-      {children}
-    </div>
+    <details open={open} className="group bg-white rounded-2xl shadow-sm mb-6" style={cardStyle}>
+      <summary className="list-none [&::-webkit-details-marker]:hidden cursor-pointer select-none flex items-center gap-3 px-5 sm:px-6 py-4">
+        <span className="w-8 h-8 rounded-full bg-brand-main text-white flex items-center justify-center text-xl leading-none transition-transform group-open:rotate-45">
+          +
+        </span>
+        <span className="font-heading text-lg font-bold" style={{ color: 'var(--brand-dark)' }}>
+          {title}
+        </span>
+        <span className="ml-auto text-xs font-semibold text-brand-main group-open:hidden">Open form</span>
+        <span className="ml-auto text-xs font-semibold hidden group-open:inline" style={{ color: MUTED }}>Close</span>
+      </summary>
+      <div className="px-5 sm:px-6 pb-6 pt-1 border-t border-brand-main/10">
+        <div className="pt-4">{children}</div>
+      </div>
+    </details>
   )
 }
 

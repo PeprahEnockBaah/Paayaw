@@ -13,7 +13,7 @@ export default async function BooksSection({ status }: { status?: string }) {
   const msg = status ? BOOK_MESSAGES[status] : undefined
 
   return (
-    <div className="mb-16">
+    <div>
       <SectionHeader
         id="books"
         title="Books & Devotionals"
@@ -26,7 +26,7 @@ export default async function BooksSection({ status }: { status?: string }) {
         <NotSetUp what="Books" />
       ) : (
         <>
-          <AddCard title="Add a Book">
+          <AddCard title="Add a Book" open={!!msg && !msg[0]}>
             <BookForm />
           </AddCard>
           {books.length === 0 ? (

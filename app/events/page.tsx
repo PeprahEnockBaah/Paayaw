@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import { getEvents, splitDate, tagColors } from '@/lib/events'
+import EventImage from './event-image'
+import { getEvents, splitDate } from '@/lib/events'
 
 export const metadata = { title: 'Events – Gideon Peprah Ministries' }
 export const dynamic = 'force-dynamic'
@@ -23,7 +24,7 @@ export default async function EventsPage() {
       </section>
       <div className="gold-bar" />
 
-      <section className="max-w-5xl mx-auto px-6 py-14 sm:py-20">
+      <section className="max-w-7xl mx-auto px-6 py-14 sm:py-20">
         {events.length === 0 ? (
           <div className="text-center py-16">
             <h3 className="font-heading text-2xl font-bold mb-3" style={{ color: 'var(--brand-dark)' }}>
@@ -34,60 +35,38 @@ export default async function EventsPage() {
             </p>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {events.map((e) => {
               const d = splitDate(e.event_date)
               return (
-                <div
-                  key={e.id}
-                  className="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col sm:flex-row transition-shadow hover:shadow-lg"
-                  style={{ border: '1px solid rgba(14,90,69,0.1)' }}
-                >
-                  {/* Date block */}
-                  <div
-                    className="flex flex-col items-center justify-center px-8 py-6 sm:py-0 flex-shrink-0 text-white"
-                    style={{ background: 'var(--brand-dark)', minWidth: '110px' }}
-                  >
-                    <span className="text-4xl font-black font-heading leading-none">{d.day}</span>
-                    <span className="text-sm font-bold tracking-widest uppercase mt-1" style={{ color: 'var(--brand-soft)' }}>
-                      {d.month}
-                    </span>
-                    <span className="text-xs opacity-60 mt-0.5">{d.year}</span>
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-6 flex-1">
-                    {e.image_url && (
-                      <img
-                        src={e.image_url}
-                        alt={e.title}
-                        className="w-full h-48 object-cover rounded-lg mb-4"
-                      />
-                    )}
-                    <div className="flex flex-wrap items-start gap-3 mb-2">
-                      <h3 className="font-heading font-bold text-xl" style={{ color: 'var(--brand-dark)' }}>
-                        {e.title}
-                      </h3>
-                      {e.tag && (
-                        <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${tagColors[e.tag] || 'bg-gray-100 text-gray-600'}`}>
-                          {e.tag}
-                        </span>
-                      )}
+                <div key={e.id} className="bg-white rounded-xl overflow-hidden shadow-md card-hover flex flex-col">
+                  <div className="relative">
+                    <EventImage src={e.image_url} title={e.title} />
+                    {/* Date badge */}
+                    <div className="absolute top-3 left-3 flex flex-col items-center justify-center rounded-lg px-3 py-1.5 bg-white shadow-md min-w-[56px]">
+                      <span className="text-2xl font-black font-heading leading-none" style={{ color: 'var(--brand-dark)' }}>
+                        {d.day}
+                      </span>
+                      <span className="text-[10px] font-bold tracking-widest uppercase text-brand-main">
+                        {d.month} {d.year}
+                      </span>
                     </div>
+                  </div>
+                  <div className="p-5 flex flex-col flex-1">
+                    {e.tag && (
+                      <span className="text-[10px] font-bold tracking-widest uppercase text-brand-main">{e.tag}</span>
+                    )}
+                    <h3 className="font-heading font-bold text-lg mt-1 mb-2" style={{ color: 'var(--brand-dark)' }}>{e.title}</h3>
                     {(e.location || e.time) && (
-                      <div className="flex flex-wrap gap-x-6 gap-y-1 mb-3 text-sm" style={{ color: '#66736d' }}>
-                        {e.location && <span>📍 {e.location}</span>}
-                        {e.time && <span>🕐 {e.time}</span>}
+                      <div className="space-y-0.5 mb-2 text-xs" style={{ color: '#66736d' }}>
+                        {e.location && <p>📍 {e.location}</p>}
+                        {e.time && <p>🕐 {e.time}</p>}
                       </div>
                     )}
                     {e.description && (
-                      <p className="text-sm leading-relaxed" style={{ color: '#66736d' }}>{e.description}</p>
+                      <p className="text-xs leading-relaxed mb-4" style={{ color: '#66736d' }}>{e.description}</p>
                     )}
-                    <Link
-                      href="/contact"
-                      className="inline-block mt-4 text-xs font-bold tracking-wide"
-                      style={{ color: 'var(--brand-main)' }}
-                    >
+                    <Link href="/contact" className="mt-auto text-xs font-bold" style={{ color: 'var(--brand-main)' }}>
                       Register / Learn More →
                     </Link>
                   </div>

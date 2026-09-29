@@ -21,7 +21,7 @@ export default async function SliderSection({ status }: { status?: string }) {
   const msg = status ? SLIDE_MESSAGES[status] : undefined
 
   return (
-    <div className="mb-16">
+    <div>
       <SectionHeader id="slider" title="Homepage Slider" hint="Images play in this order; new images go first. Use the arrows to reorder." />
       {/* Successes show as a pop-up; errors also stay here, next to the form. */}
       {msg && !msg[0] && <Notice ok={false}>{msg[1]}</Notice>}
@@ -30,7 +30,7 @@ export default async function SliderSection({ status }: { status?: string }) {
         <NotSetUp what="The slider" />
       ) : (
         <>
-          <AddCard title="Add an Image">
+          <AddCard title="Add an Image" open={!!msg && !msg[0]}>
             <SlideForm linkOptions={linkOptions} />
           </AddCard>
           {slides.length === 0 ? (

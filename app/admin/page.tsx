@@ -12,17 +12,9 @@ import BooksSection from './books-section'
 import DonationsSection from './donations-section'
 import OrdersSection from './orders-section'
 import Toast from './toast'
+import AdminTabs from './admin-tabs'
 import { adminMessage } from './messages'
-import { Checkbox, ImageField, SectionHeader, SelectField, TextArea, TextField } from './admin-ui'
-
-const QUICK_LINKS = [
-  { href: '#slider', label: 'Slider' },
-  { href: '#sermons', label: 'Sermons' },
-  { href: '#books', label: 'Books' },
-  { href: '#events', label: 'Events' },
-  { href: '#orders', label: 'Orders' },
-  { href: '#donations', label: 'Donations' },
-]
+import { AddCard, Checkbox, ImageField, SectionHeader, SelectField, TextArea, TextField } from './admin-ui'
 
 export const metadata = {
   title: 'Website Admin – GPM',
@@ -48,43 +40,11 @@ export default async function AdminPage({
 
   const events = await getEvents('newest')
 
-  return (
-    <section className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
-      <div className="flex items-start justify-between gap-4 mb-6">
-        <div>
-          <h1 className="font-heading text-3xl font-bold" style={{ color: 'var(--brand-dark)' }}>
-            Website Admin
-          </h1>
-          <p className="text-sm mt-1" style={{ color: '#66736d' }}>
-            Update the slider, sermons, books and events, and see book orders and donations. Changes appear on the website right away.
-          </p>
-        </div>
-        <form action={logout}>
-          <button type="submit" className="text-sm font-semibold" style={{ color: 'var(--brand-main)' }}>
-            Log out
-          </button>
-        </form>
-      </div>
+  const eventError = searchParams.error === 'save' || searchParams.error === 'missing'
 
-      <nav className="flex flex-wrap gap-2 mb-10">
-        {QUICK_LINKS.map((l) => (
-          <a
-            key={l.href}
-            href={l.href}
-            className="px-4 py-1.5 rounded-full text-sm font-semibold bg-brand-pale text-brand-dark hover:bg-brand-light/30 transition-colors"
-          >
-            {l.label}
-          </a>
-        ))}
-      </nav>
-
-      <Toast message={adminMessage(searchParams)} />
-
-      <SliderSection status={searchParams.slide} />
-      <SermonsSection status={searchParams.sermon} />
-      <BooksSection status={searchParams.book} />
-
-      <SectionHeader id="events" title="Events" hint="Latest added first. On the public Events page they're shown by date." />
+  const eventsTab = (
+    <>
+      <SectionHeader title="Events" hint="Latest added first. On the public Events page they're shown by date." />
 
       {searchParams.error === 'save' && (
         <p className="text-sm mb-6 px-4 py-2.5 rounded-lg bg-red-50 text-red-700">
@@ -97,18 +57,14 @@ export default async function AdminPage({
         </p>
       )}
 
-      {/* Add event */}
-      <div className="bg-white rounded-2xl shadow-sm p-6 mb-10" style={{ border: '1px solid rgba(14,90,69,0.1)' }}>
-        <h2 className="font-heading text-xl font-bold mb-5" style={{ color: 'var(--brand-dark)' }}>
-          Add a New Event
-        </h2>
+      <AddCard title="Add a New Event" open={eventError}>
         <EventForm />
-      </div>
+      </AddCard>
 
       {/* Existing events */}
-      <h2 className="font-heading text-xl font-bold mb-4" style={{ color: 'var(--brand-dark)' }}>
+      <h3 className="font-heading text-lg font-bold mb-4" style={{ color: 'var(--brand-dark)' }}>
         Current Events ({events.length})
-      </h2>
+      </h3>
       {events.length === 0 ? (
         <p className="text-sm" style={{ color: '#66736d' }}>
           No events yet. Add your first one above.
@@ -176,10 +132,44 @@ export default async function AdminPage({
         </div>
       )}
 
-      <div className="mt-16">
-        <OrdersSection />
-        <DonationsSection />
-      </div>
+    </>
+  )
+
+  return (
+    <section className="max-w-4xl mx-auto px-4 sm:px-6 pt-6 pb-16">
+      <header className="flex items-center justify-between gap-4 mb-2">
+        <div className="min-w-0">
+          <h1 className="font-heading text-2xl sm:text-3xl font-bold" style={{ color: 'var(--brand-dark)' }}>
+            Website Admin
+          </h1>
+          <p className="text-sm mt-0.5" style={{ color: '#66736d' }}>
+            Changes appear on the website right away.
+          </p>
+        </div>
+        <div className="flex items-center gap-4 flex-shrink-0">
+          <a href="/" target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-brand-main hover:underline">
+            View website ↗
+          </a>
+          <form action={logout}>
+            <button type="submit" className="text-sm font-semibold px-4 py-2 rounded-full bg-brand-pale text-brand-dark hover:bg-brand-light/30 transition-colors">
+              Log out
+            </button>
+          </form>
+        </div>
+      </header>
+
+      <Toast message={adminMessage(searchParams)} />
+
+      <AdminTabs
+        tabs={[
+          { id: 'slider', label: 'Slider', content: <SliderSection status={searchParams.slide} /> },
+          { id: 'sermons', label: 'Sermons', content: <SermonsSection status={searchParams.sermon} /> },
+          { id: 'books', label: 'Books', content: <BooksSection status={searchParams.book} /> },
+          { id: 'events', label: `Events (${events.length})`, content: eventsTab },
+          { id: 'orders', label: 'Orders', content: <OrdersSection /> },
+          { id: 'donations', label: 'Donations', content: <DonationsSection /> },
+        ]}
+      />
     </section>
   )
 }

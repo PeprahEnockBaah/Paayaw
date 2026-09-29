@@ -31,7 +31,7 @@ export default async function DonationsSection() {
   const thisMonth = received.filter((d) => new Date(d.paid_at || d.created_at).getTime() >= monthStart)
 
   return (
-    <div className="mb-16">
+    <div>
       <SectionHeader
         id="donations"
         title="Donations"

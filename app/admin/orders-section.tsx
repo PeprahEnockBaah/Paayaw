@@ -34,7 +34,7 @@ export default async function OrdersSection() {
   const shown = (orders || []).filter((o) => o.status !== 'pending' && o.status !== 'abandoned')
 
   return (
-    <div className="mb-16">
+    <div>
       <SectionHeader
         id="orders"
         title="Book Orders"

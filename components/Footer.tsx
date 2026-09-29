@@ -5,10 +5,7 @@ const columns = [
   {
     title: 'About Us',
     links: [
-      { label: 'How It Began', href: '/about-us' },
       { label: 'Statements of Faith', href: '/about-us#faith' },
-      { label: 'The Prophet', href: '/about-us#prophet' },
-      { label: 'Governing Council', href: '/about-us#leadership' },
       { label: 'What We Do', href: '/what-we-do' },
     ],
   },

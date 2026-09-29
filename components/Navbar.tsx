@@ -9,13 +9,7 @@ import SocialIcons from '@/components/SocialIcons'
 type NavItem = { label: string; href: string; children?: { label: string; href: string }[] }
 
 const navItems: NavItem[] = [
-  { label: 'About Us', href: '/about-us', children: [
-      { label: 'How It Began', href: '/about-us' },
-      { label: 'Statements of Faith', href: '/about-us#faith' },
-      { label: 'The Prophet', href: '/about-us#prophet' },
-      { label: 'Leadership', href: '/about-us#leadership' },
-    ],
-  },
+  { label: 'About Us', href: '/about-us' },
   { label: 'What We Do', href: '/what-we-do' },
   { label: 'Events', href: '/events' },
   { label: 'Resources', href: '/resources' },
@@ -95,6 +89,9 @@ export default function Navbar() {
 
   const toggle = (label: string) => setOpenDropdown(openDropdown === label ? null : label)
   const isActive = (href: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href))
+
+  // The admin page has its own header.
+  if (pathname.startsWith('/admin')) return null
 
   return (
     <>

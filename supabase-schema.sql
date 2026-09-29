@@ -212,3 +212,12 @@ create table if not exists public.book_orders (
 create index if not exists book_orders_created_at on public.book_orders (created_at desc);
 
 alter table public.book_orders enable row level security;
+
+-- ============================================================
+-- Email receipts
+-- Set when the receipt / Prophet notice has been sent, so the
+-- webhook and thank-you page never send the same email twice.
+-- ============================================================
+
+alter table public.donations   add column if not exists emailed_at timestamptz;
+alter table public.book_orders add column if not exists emailed_at timestamptz;

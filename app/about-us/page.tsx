@@ -10,6 +10,10 @@ const leaders = [
   { name: 'Dr. Abena Osei', role: 'Treasurer', img: '/images/V_108.jpg' },
 ]
 
+// Only the Statements of Faith section is shown for now. Set to true to bring back
+// How It Began, The Prophet and Leadership.
+const SHOW_FULL_ABOUT = false
+
 export default function AboutPage() {
   return (
     <>
@@ -29,6 +33,7 @@ export default function AboutPage() {
       <div className="gold-bar" />
 
       {/* How It Began */}
+      {SHOW_FULL_ABOUT && (
       <section id="how-it-began" className="max-w-7xl mx-auto px-6 py-14 sm:py-24">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div>
@@ -52,6 +57,7 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* Statements of Faith */}
       <section id="faith" className="py-14 sm:py-20 px-6 bg-paper">
@@ -78,6 +84,8 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {SHOW_FULL_ABOUT && (
+      <>
       {/* The Prophet */}
       <section id="prophet" className="max-w-7xl mx-auto px-6 py-14 sm:py-24">
         <div className="text-center mb-14">
@@ -133,6 +141,8 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+      </>
+      )}
     </>
   )
 }
