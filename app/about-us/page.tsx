@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import AboutTabs, { type AboutTab } from './about-tabs'
 
 export const metadata = { title: 'About Us – Gideon Peprah Ministries' }
 
@@ -10,139 +11,116 @@ const leaders = [
   { name: 'Dr. Abena Osei', role: 'Treasurer', img: '/images/V_108.jpg' },
 ]
 
-// Only the Statements of Faith section is shown for now. Set to true to bring back
-// How It Began, The Prophet and Leadership.
+const beliefs = [
+  { title: 'The Bible', body: 'We believe the Holy Bible is the inspired, infallible Word of God and the supreme authority in all matters of faith and conduct.' },
+  { title: 'The Trinity', body: 'We believe in one God, eternally existing in three persons: Father, Son, and Holy Spirit.' },
+  { title: 'Jesus Christ', body: 'We believe in the deity of our Lord Jesus Christ, His virgin birth, sinless life, atoning death, bodily resurrection, and His imminent return.' },
+  { title: 'Salvation', body: 'We believe that salvation is by grace through faith in Jesus Christ alone, and that all who repent and believe shall receive eternal life.' },
+  { title: 'The Holy Spirit', body: 'We believe in the present ministry of the Holy Spirit, who empowers believers for life and service.' },
+  { title: 'The Church', body: 'We believe in the universal Church, the Body of Christ, and the importance of Christian fellowship, worship, and discipleship.' },
+]
+
+// Only The Prophet and Statements of Faith are shown for now. Set to true to bring back
+// How It Began and Leadership (as extra tabs).
 const SHOW_FULL_ABOUT = false
 
+// Each section is a tab. Statements of Faith fits on one laptop screen; The Prophet has room to read.
 export default function AboutPage() {
-  return (
-    <>
-      {/* Page Hero */}
-      <section
-        className="relative flex items-center justify-center text-white text-center px-6 py-14 sm:py-20 lg:py-28"
-        style={{ background: 'linear-gradient(160deg, #072e24 0%, #051f19 100%)' }}
-      >
-        <div className="absolute inset-0 opacity-10"
-          style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23e8c35a' fill-rule='evenodd'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4z'/%3E%3C/g%3E%3C/svg%3E")` }} />
-        <div className="relative z-10">
-          <p className="text-xs tracking-[4px] uppercase font-bold mb-4" style={{ color: 'var(--gold-light)' }}>Our Story</p>
-          <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold mb-4">About Us</h1>
-          <div className="w-16 h-1 mx-auto" style={{ background: 'var(--brand-soft)' }} />
+  // Not squeezed to one screen: the bio gets room to read, with the photo as tall as the text.
+  const prophet = (
+    <section className="max-w-6xl mx-auto px-4 sm:px-6 py-10 lg:py-14">
+      {/* Desktop: the photo stretches to the full height of the bio, so the two line up. */}
+      <div className="grid grid-cols-1 lg:grid-cols-[5fr_6fr] xl:grid-cols-2 gap-10 xl:gap-14">
+        <div className="relative flex justify-center lg:block">
+          <Image
+            src="/images/prophet.png"
+            alt="Prophet Gideon Peprah"
+            width={1242}
+            height={1266}
+            priority
+            className="w-full max-w-md h-auto mx-auto drop-shadow-2xl lg:absolute lg:inset-y-0 lg:right-0 lg:h-full lg:w-auto lg:max-w-[calc(100%+3rem)] lg:mx-0 object-contain object-top xl:object-bottom"
+          />
         </div>
-      </section>
-      <div className="gold-bar" />
-
-      {/* How It Began */}
-      {SHOW_FULL_ABOUT && (
-      <section id="how-it-began" className="max-w-7xl mx-auto px-6 py-14 sm:py-24">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div>
-            <h2 className="section-title mb-6">How It Began</h2>
-            <div className="space-y-4 leading-[1.85] text-ink-muted">
-              <p>Gideon Peprah Ministries (GPM) was founded out of a deep conviction to mobilise the Body of Christ and position God's people for the imminent return of our Lord Jesus Christ.</p>
-              <p>What began as a small fellowship of believers united by a common passion for the Word of God has grown into a powerful ministry spanning multiple nations, reaching souls and transforming communities through the power of the Gospel.</p>
-              <p>Over the years, GPM has expanded its reach through church planting, evangelism campaigns, education initiatives, and community development projects — all rooted in the uncompromising proclamation of the Gospel.</p>
-              <p>Today, GPM stands as a beacon of hope, equipping and empowering believers to live out their faith in every sphere of society.</p>
-            </div>
+        <div>
+          <h2 className="font-heading text-3xl font-bold mb-2 text-brand-main normal-case">Prophet Gideon Peprah</h2>
+          <p className="text-sm font-bold tracking-widest uppercase mb-6 text-brand-main">Founder &amp; President, GPM</p>
+          <div className="space-y-3.5 text-[15px] leading-[1.75] text-ink-muted">
+            <p>Gideon Peprah is a prophet of God, visionary ministry leader, and seasoned broadcast professional dedicated to releasing divine truth and setting standards of excellence across media and ministry.</p>
+            <p>Born in Ghana and raised as a pastor&rsquo;s child within The Church of Pentecost, Gideon was formed in an environment of deep spiritual discipline and service. In January 2000, he received a life-defining supernatural encounter with God&mdash;an impartation that empowered him with prophetic grace and imparted the core vision for his life&rsquo;s work. Out of this encounter flowed the birth of Gideon Peprah Ministries and The Valor Gospel Church, both of which he serves as Founder and President, laboring to align lives, restore purpose, and equip believers for kingdom impact.</p>
+            <p>Alongside his spiritual mantle, Gideon is a professionally trained sound engineer, radio and TV broadcast technician, and video editor. His technical career includes key media roles, notably serving as the sound engineer, video editor, and playout programmer for Champions TV in Abuja, Nigeria. Merging technical mastery with an entrepreneurial drive, he established Valor Multimedia, where he serves as Founder and CEO, delivering high-caliber digital solutions and event production services.</p>
+            <p>Guided by a divine imperative to build, instruct, and transform, Gideon operates at the intersection of prophetic authority and media innovation. He is happily married and blessed with children.</p>
           </div>
-          <div className="relative flex justify-center">
-            <Image
-              src="/images/Pastor.jpg"
-              alt="Prophet Gideon Peprah"
-              width={914}
-              height={1280}
-              className="relative z-10 w-full max-w-md rounded-xl shadow-2xl object-cover object-top"
-              style={{ aspectRatio: '3/4' }}
-            />
-          </div>
+          <Link href="/book-the-prophet" className="btn-primary inline-block mt-6">Book the Prophet</Link>
         </div>
-      </section>
-      )}
-
-      {/* Statements of Faith */}
-      <section id="faith" className="py-14 sm:py-20 px-6 bg-paper">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="section-title">Statements of Faith</h2>
-            <div className="title-underline" />
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[
-              { title: 'The Bible', body: 'We believe the Holy Bible is the inspired, infallible Word of God and the supreme authority in all matters of faith and conduct.' },
-              { title: 'The Trinity', body: 'We believe in one God, eternally existing in three persons: Father, Son, and Holy Spirit.' },
-              { title: 'Jesus Christ', body: 'We believe in the deity of our Lord Jesus Christ, His virgin birth, sinless life, atoning death, bodily resurrection, and His imminent return.' },
-              { title: 'Salvation', body: 'We believe that salvation is by grace through faith in Jesus Christ alone, and that all who repent and believe shall receive eternal life.' },
-              { title: 'The Holy Spirit', body: 'We believe in the present ministry of the Holy Spirit, who empowers believers for life and service.' },
-              { title: 'The Church', body: 'We believe in the universal Church, the Body of Christ, and the importance of Christian fellowship, worship, and discipleship.' },
-            ].map((f) => (
-              <div key={f.title} className="bg-white rounded-xl p-6 shadow-sm border-l-4" style={{ borderColor: 'var(--gold)' }}>
-                <h3 className="font-heading font-bold text-lg mb-2 text-brand-main">{f.title}</h3>
-                <p className="text-sm leading-relaxed text-ink-muted">{f.body}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {SHOW_FULL_ABOUT && (
-      <>
-      {/* The Prophet */}
-      <section id="prophet" className="max-w-7xl mx-auto px-6 py-14 sm:py-24">
-        <div className="text-center mb-14">
-          <h2 className="section-title">The Prophet</h2>
-          <div className="title-underline" />
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div className="relative flex justify-center">
-            <Image
-              src="/images/Pastor2.jpg"
-              alt="Prophet Gideon Peprah"
-              width={914}
-              height={1280}
-              className="w-full max-w-md rounded-xl shadow-2xl object-cover object-top mx-auto"
-              style={{ aspectRatio: '3/4' }}
-            />
-          </div>
-          <div>
-            <h3 className="font-heading text-3xl font-bold mb-2 text-brand-main">Prophet Gideon Peprah</h3>
-            <p className="text-sm font-bold tracking-widest uppercase mb-6 text-brand-main">Founder &amp; President, GPM</p>
-            <div className="space-y-4 leading-[1.85] text-ink-muted">
-              <p>Prophet Gideon Peprah is a man of deep faith and unwavering commitment to the Word of God. Called by God from a young age, he has devoted his life to the proclamation of the Gospel and the building of God's Kingdom on earth.</p>
-              <p>With decades of ministry experience spanning evangelism, church planting, and community development, Prophet Gideon carries a burning passion to see the Body of Christ mobilised and prepared for the second coming of Jesus Christ.</p>
-              <p>He holds advanced degrees in Theology and Ministry Leadership, and is widely regarded as a gifted teacher, preacher, and apostolic voice to this generation.</p>
-              <p>Together with his wife Mrs. Peprah, they lead GPM with a shared vision of reaching the lost, strengthening believers, and transforming communities for the glory of God.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Leadership */}
-      <section id="leadership" className="py-14 sm:py-20 px-6 bg-brand-main">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-14">
-            <h2 className="font-heading text-4xl font-bold text-white mb-3">Governing Council &amp; Leadership</h2>
-            <div className="w-16 h-1 mx-auto" style={{ background: 'var(--brand-soft)' }} />
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {leaders.map((l) => (
-              <div key={l.name} className="text-center">
-                <Image
-                  src={l.img}
-                  alt={l.name}
-                  width={200}
-                  height={200}
-                  className="w-28 h-28 rounded-full mx-auto mb-4 object-cover object-top"
-                  style={{ border: '3px solid var(--gold)' }}
-                />
-                <h4 className="font-bold text-white text-base">{l.name}</h4>
-                <p className="text-sm mt-1" style={{ color: 'var(--gold-light)' }}>{l.role}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-      </>
-      )}
-    </>
+      </div>
+    </section>
   )
+
+  const faith = (
+    <section className="bg-paper px-4 sm:px-6 py-6">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {beliefs.map((f) => (
+          <div key={f.title} className="bg-white rounded-xl p-5 shadow-sm border-l-4" style={{ borderColor: 'var(--gold)' }}>
+            <h3 className="font-heading font-bold text-lg mb-1.5 text-brand-main">{f.title}</h3>
+            <p className="text-sm leading-relaxed text-ink-muted">{f.body}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+
+  const howItBegan = (
+    <section className="max-w-6xl mx-auto px-6 py-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="space-y-4 leading-[1.85] text-ink-muted">
+          <p>Gideon Peprah Ministries (GPM) was founded out of a deep conviction to mobilise the Body of Christ and position God's people for the imminent return of our Lord Jesus Christ.</p>
+          <p>What began as a small fellowship of believers united by a common passion for the Word of God has grown into a powerful ministry spanning multiple nations, reaching souls and transforming communities through the power of the Gospel.</p>
+          <p>Over the years, GPM has expanded its reach through church planting, evangelism campaigns, education initiatives, and community development projects — all rooted in the uncompromising proclamation of the Gospel.</p>
+          <p>Today, GPM stands as a beacon of hope, equipping and empowering believers to live out their faith in every sphere of society.</p>
+        </div>
+        <Image
+          src="/images/Pastor.jpg"
+          alt="Prophet Gideon Peprah"
+          width={914}
+          height={1280}
+          className="w-full max-w-sm mx-auto rounded-xl shadow-2xl object-cover object-top"
+          style={{ aspectRatio: '3/4' }}
+        />
+      </div>
+    </section>
+  )
+
+  const leadership = (
+    <section className="py-8 px-6 bg-brand-main">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        {leaders.map((l) => (
+          <div key={l.name} className="text-center">
+            <Image
+              src={l.img}
+              alt={l.name}
+              width={200}
+              height={200}
+              className="w-28 h-28 rounded-full mx-auto mb-4 object-cover object-top"
+              style={{ border: '3px solid var(--gold)' }}
+            />
+            <h4 className="font-bold text-white text-base">{l.name}</h4>
+            <p className="text-sm mt-1" style={{ color: 'var(--gold-light)' }}>{l.role}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+
+  const tabs: AboutTab[] = [
+    { id: 'prophet', label: 'The Prophet', content: prophet },
+    { id: 'faith', label: 'Statements of Faith', content: faith },
+    ...(SHOW_FULL_ABOUT
+      ? [
+          { id: 'how-it-began', label: 'How It Began', content: howItBegan },
+          { id: 'leadership', label: 'Leadership', content: leadership },
+        ]
+      : []),
+  ]
+
+  return <AboutTabs tabs={tabs} />
 }

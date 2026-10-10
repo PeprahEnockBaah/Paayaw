@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useEffect, useState, useRef, useCallback } from 'react'
 
 interface Video {
@@ -122,24 +123,18 @@ export default function MediaPage() {
 
   return (
     <>
-      {/* Header */}
-      <section
-        className="relative flex items-center justify-center text-white text-center px-6 py-14 sm:py-20"
-        style={{ background: 'linear-gradient(160deg, var(--brand-dark) 0%, #0e5a45 100%)' }}
-      >
-        <div
-          className="absolute inset-0 opacity-[0.07]"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23e8c35a' fill-rule='evenodd'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E")`,
-          }}
+      {/* Header: a designed banner with the title built in, shown whole (never cropped). */}
+      <section className="bg-brand-dark">
+        <h1 className="sr-only">Media</h1>
+        <Image
+          src="/images/banners/media.jpg"
+          alt="Media – Watch, Listen, Be Transformed: sermons, prophetic teachings and conferences"
+          width={1280}
+          height={320}
+          priority
+          sizes="100vw"
+          className="w-full h-auto"
         />
-        <div className="relative z-10">
-          <p className="text-xs tracking-[4px] uppercase font-bold mb-4" style={{ color: 'var(--gold-light)' }}>
-            Watch & Listen
-          </p>
-          <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold mb-4">Media</h1>
-          <div className="w-16 h-1 mx-auto" style={{ background: 'var(--brand-soft)' }} />
-        </div>
       </section>
       <div className="gold-bar" />
 

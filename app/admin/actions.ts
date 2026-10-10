@@ -9,6 +9,7 @@ import { checkPassword, isAuthed, sessionToken, COOKIE_NAME } from '@/lib/auth'
 import { MAX_ATTEMPTS, visitorKey, recentFailures, recordFailure, clearFailures } from '@/lib/login-limit'
 import { SLIDER_IMAGES_BUCKET } from '@/lib/slides'
 import { BOOK_IMAGES_BUCKET, BOOK_CATEGORIES, normalizeAudiomackUrl } from '@/lib/resources'
+import { contactInfoRows } from '@/lib/contact-info'
 
 export async function login(formData: FormData) {
   const key = visitorKey()
@@ -471,4 +472,34 @@ export async function setOrderFulfilled(formData: FormData) {
 
   revalidatePath('/admin')
   redirect(`/admin?order=${fulfilled ? 'fulfilled' : 'reopened'}#orders`)
+}
+
+// ── Contact details ──────────────────────────────────────────
+
+/** Save the address, phone, email and office hours shown on the Contact page. */
+export async function updateContactInfo(formData: FormData) {
+  if (!isAuthed()) redirect('/admin')
+  // Tidy each line and drop blank ones, so the page never shows empty rows.
+  const lines = (k: string) =>
+    String(formData.get(k) || '')
+      .split(/\r?\n/)
+      .map((l) => l.trim())
+      .filter(Boolean)
+      .join('\n')
+      .slice(0, 500)
+  const info = {
+    address: lines('address'),
+    phone: String(formData.get('phone') || '').trim().slice(0, 40),
+    email: String(formData.get('email') || '').trim().toLowerCase().slice(0, 120),
+    hours: lines('hours'),
+  }
+  if (!info.address || !info.phone || !info.email || !info.hours) redirect('/admin?contact=missing#contact')
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(info.email)) redirect('/admin?contact=bademail#contact')
+
+  const { error } = await supabaseAdmin().from('site_settings').upsert(contactInfoRows(info))
+  if (error) redirect('/admin?contact=error#contact')
+
+  revalidatePath('/contact')
+  revalidatePath('/admin')
+  redirect('/admin?contact=updated#contact')
 }

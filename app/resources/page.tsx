@@ -1,4 +1,5 @@
 import FitImage from '@/components/FitImage'
+import Image from 'next/image'
 import Link from 'next/link'
 import { getBooks, getSermons, audiomackEmbedUrl, AUDIOMACK_PROFILE } from '@/lib/resources'
 import { formatMoney } from '@/lib/giving'
@@ -15,10 +16,10 @@ export default async function ResourcesPage() {
 
   return (
     <>
-      <section
-        className="relative flex items-center justify-center text-white text-center px-6 py-14 sm:py-20 lg:py-28"
-        style={{ background: 'linear-gradient(160deg, var(--brand-dark) 0%, #0e5a45 100%)' }}
-      >
+      <section className="relative flex items-center justify-center text-white text-center px-6 py-10 min-h-[208px] sm:min-h-[260px] lg:min-h-[336px] overflow-hidden bg-brand-dark">
+        {/* Banner photo, tinted dark green so the title stays readable. */}
+        <Image src="/images/banners/resources.jpg" alt="" fill priority sizes="100vw" className="object-cover" />
+        <div className="absolute inset-0 bg-brand-dark/45" aria-hidden />
         <div className="relative z-10">
           <p className="text-xs tracking-[4px] uppercase font-bold mb-4" style={{ color: 'var(--gold-light)' }}>Grow Your Faith</p>
           <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold mb-4">Resources</h1>
@@ -36,17 +37,35 @@ export default async function ResourcesPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {books.map((b) => (
             <div key={b.id} className="bg-white rounded-xl overflow-hidden shadow-md card-hover">
-              <FitImage
-                src={b.image_url}
-                alt={b.title}
-                className="aspect-[4/3]"
-                sizes="(min-width: 1024px) 300px, (min-width: 640px) 50vw, 100vw"
-              />
+              {/* For books that can be ordered, the cover and title also open the order page. */}
+              {b.price_minor ? (
+                <Link href={orderPath(b.id)} tabIndex={-1} aria-hidden className="block">
+                  <FitImage
+                    src={b.image_url}
+                    alt={b.title}
+                    className="aspect-[4/3]"
+                    sizes="(min-width: 1024px) 300px, (min-width: 640px) 50vw, 100vw"
+                  />
+                </Link>
+              ) : (
+                <FitImage
+                  src={b.image_url}
+                  alt={b.title}
+                  className="aspect-[4/3]"
+                  sizes="(min-width: 1024px) 300px, (min-width: 640px) 50vw, 100vw"
+                />
+              )}
               <div className="p-5">
                 <span className="text-[10px] font-bold tracking-widest uppercase text-brand-main">
                   {b.category}
                 </span>
-                <h3 className="font-heading font-bold text-lg mt-1 mb-2" style={{ color: 'var(--brand-dark)' }}>{b.title}</h3>
+                <h3 className="font-heading font-bold text-lg mt-1 mb-2" style={{ color: 'var(--brand-dark)' }}>
+                  {b.price_minor ? (
+                    <Link href={orderPath(b.id)} className="hover:underline">{b.title}</Link>
+                  ) : (
+                    b.title
+                  )}
+                </h3>
                 <p className="text-xs leading-relaxed mb-4" style={{ color: '#66736d' }}>{b.description}</p>
                 {b.price_minor ? (
                   <Link href={orderPath(b.id)} className="inline-flex items-center gap-2 text-xs font-bold" style={{ color: 'var(--brand-main)' }}>

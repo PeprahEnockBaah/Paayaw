@@ -18,7 +18,7 @@ export default async function OrderPage() {
   return (
     <>
       <section
-        className="relative flex items-center justify-center text-white text-center px-6 py-14 sm:py-20"
+        className="relative flex items-center justify-center text-white text-center px-6 py-10 min-h-[208px] sm:min-h-[260px] lg:min-h-[336px]"
         style={{ background: 'linear-gradient(160deg, var(--brand-dark) 0%, #0e5a45 100%)' }}
       >
         <div className="relative z-10">

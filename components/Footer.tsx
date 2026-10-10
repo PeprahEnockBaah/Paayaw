@@ -1,10 +1,12 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import SocialIcons from '@/components/SocialIcons'
 
 const columns = [
   {
     title: 'About Us',
     links: [
+      { label: 'The Prophet', href: '/about-us#prophet' },
       { label: 'Statements of Faith', href: '/about-us#faith' },
       { label: 'What We Do', href: '/what-we-do' },
     ],
@@ -13,6 +15,7 @@ const columns = [
     title: 'Get Involved',
     links: [
       { label: 'Become a Partner', href: '/get-involved' },
+      { label: 'Book the Prophet', href: '/book-the-prophet' },
       { label: 'Give Online', href: '/give' },
       { label: 'Events', href: '/events' },
       { label: 'Resources', href: '/resources' },
@@ -30,13 +33,19 @@ export default function Footer() {
 
           {/* Brand */}
           <div className="col-span-2">
-            <Link href="/" className="inline-block mb-5 leading-none">
-              <div className="font-heading font-extrabold text-2xl text-white">Gideon Peprah</div>
-              <div className="mt-1 text-xs font-bold tracking-[0.3em] uppercase text-white">Ministries</div>
+            <Link href="/" className="inline-block mb-5">
+              {/* White-and-gold version of the logo, so it reads on the dark footer. */}
+              <Image
+                src="/images/logo-gpm-light.png"
+                alt="Gideon Peprah Ministries"
+                width={642}
+                height={376}
+                className="h-24 w-auto"
+              />
             </Link>
             <p className="text-sm leading-relaxed mb-6 max-w-md">
-              To be a repositioned and revived people of God ready for the return of our Lord Jesus Christ.
-              Together we mobilise God&apos;s people across the globe.
+              We are mandated to &ldquo;<strong className="font-bold text-white">INTERPRET DESTINIES</strong>&rdquo; &mdash; help
+              mankind decode the blueprint of their destinies, and give Divine directions to fulfill it.
             </p>
             <SocialIcons className="text-white" />
           </div>

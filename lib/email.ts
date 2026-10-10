@@ -4,7 +4,9 @@
 //   RESEND_API_KEY   – from Resend → API Keys
 //   EMAIL_FROM       – e.g. "Gideon Peprah Ministries <no-reply@yourdomain.org>"; the domain
 //                      must be verified in Resend → Domains
-//   PROPHET_EMAIL    – who is told about new orders and gifts (several: separate with commas)
+//   PROPHET_EMAIL    – who is told about new orders, gifts and booking requests (several: separate
+//                      with commas)
+//   CONTACT_EMAIL    – optional: where contact-form messages go (defaults to PROPHET_EMAIL)
 //   EMAIL_REPLY_TO   – optional: where replies to buyer/donor emails go
 //   SITE_URL         – optional: e.g. https://gideonpeprahministries.org, for links in emails
 //

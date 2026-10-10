@@ -221,3 +221,18 @@ alter table public.book_orders enable row level security;
 
 alter table public.donations   add column if not exists emailed_at timestamptz;
 alter table public.book_orders add column if not exists emailed_at timestamptz;
+
+-- ============================================================
+-- Website settings edited from /admin
+-- One row per setting (e.g. contact_phone). Missing rows mean
+-- the website uses its built-in value.
+-- ============================================================
+
+-- 10. Site settings (the Contact page's address, phone, email and office hours)
+create table if not exists public.site_settings (
+  key         text primary key,
+  value       text not null default '',
+  updated_at  timestamptz not null default now()
+);
+
+alter table public.site_settings enable row level security;

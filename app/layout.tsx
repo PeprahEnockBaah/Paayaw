@@ -7,7 +7,8 @@ export const metadata: Metadata = {
   title: 'Gideon Peprah Ministries – Interpreting Destinies',
   description: 'Mobilising the Body of Christ to re-position God\'s people for the second coming of our Lord Jesus Christ.',
   icons: {
-    icon: '/images/favicon.png',
+    icon: '/images/favicon.png?v=2',
+    apple: '/images/apple-touch-icon.png?v=2',
   },
 }
 

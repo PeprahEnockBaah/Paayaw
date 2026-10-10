@@ -107,3 +107,13 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .confirm-dialog[open], .confirm-dialog[open]::backdrop { animation: none; }
 }
+
+/* Page tabs (About Us): the newly shown tab fades in */
+@keyframes tabFade {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.tab-fade:not([hidden]) { animation: tabFade 0.25s ease-out; }
+@media (prefers-reduced-motion: reduce) {
+  .tab-fade:not([hidden]) { animation: none; }
+}

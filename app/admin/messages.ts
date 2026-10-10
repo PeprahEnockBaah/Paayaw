@@ -46,6 +46,13 @@ export const EVENT_MESSAGES: Table = {
   save: [false, 'Could not save the event. Please try again.'],
 }
 
+export const CONTACT_MESSAGES: Table = {
+  updated: [true, 'Contact details updated.'],
+  missing: [false, 'Please fill in the address, phone, email and office hours.'],
+  bademail: [false, 'That email address doesn’t look right. Please check it.'],
+  error: [false, 'Could not save the contact details. Please try again.'],
+}
+
 const MOVED: Record<string, string> = { slides: 'Slide', sermons: 'Sermon', books: 'Book' }
 
 const pick = (table: Table, key?: string): AdminMessage | null =>
@@ -62,6 +69,7 @@ export function adminMessage(sp: Record<string, string | undefined>): AdminMessa
     pick(SERMON_MESSAGES, sp.sermon) ||
     pick(BOOK_MESSAGES, sp.book) ||
     pick(ORDER_MESSAGES, sp.order) ||
+    pick(CONTACT_MESSAGES, sp.contact) ||
     pick(EVENT_MESSAGES, sp.added ? 'added' : sp.updated ? 'updated' : sp.deleted ? 'deleted' : undefined) ||
     // Event errors use ?error=save / ?error=missing (?error=1 / locked are login errors, shown on the login form).
     pick(EVENT_MESSAGES, sp.error === 'save' || sp.error === 'missing' ? sp.error : undefined)

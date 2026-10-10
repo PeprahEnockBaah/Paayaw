@@ -93,7 +93,7 @@ export default async function HomePage() {
           Kept compact so the whole section fits on one screen below the navbar. */}
       <section className="bg-paper">
         <div className="max-w-6xl mx-auto px-5 sm:px-6 py-5 sm:py-10 lg:py-6">
-          <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-8 lg:gap-10 xl:gap-14 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr] gap-8 lg:gap-10 xl:gap-14 items-center">
             {/* Container sizing lets the title shrink to fit its column on one line. */}
             <div className="[container-type:inline-size]">
               <h1
@@ -128,11 +128,11 @@ export default async function HomePage() {
               <div className="mt-4 sm:mt-5 flex items-center gap-3">
                 {/* Phones and tablets: a small photo here instead of the big one, so the section fits one screen. */}
                 <Image
-                  src="/images/Pastor.jpg"
+                  src="/images/welcome.png"
                   alt=""
                   width={96}
                   height={96}
-                  className="lg:hidden w-12 h-12 rounded-full object-cover object-top ring-2 ring-gold"
+                  className="lg:hidden w-12 h-12 rounded-full object-cover object-top ring-2 ring-gold bg-paper"
                 />
                 <div className="pl-3 border-l-4 border-gold">
                   <p className="font-heading font-bold text-lg leading-tight text-brand-dark">Prophet Gideon Peprah</p>
@@ -145,15 +145,15 @@ export default async function HomePage() {
               </div>
             </div>
 
-            {/* Desktop: sized to the screen height so it never pushes the section past one screen. */}
-            <div className="hidden lg:flex justify-center">
+            {/* Desktop: fills exactly the height of the text column, so the photo lines up with
+                the heading at the top and the buttons at the bottom. */}
+            <div className="hidden lg:block relative self-stretch">
               <Image
-                src="/images/Pastor.jpg"
+                src="/images/welcome.png"
                 alt="Prophet Gideon Peprah"
-                width={914}
-                height={1280}
-                className="h-[calc(100svh-9rem)] min-h-[340px] max-h-[600px] w-auto rounded-2xl shadow-2xl object-cover object-top"
-                style={{ aspectRatio: '3/4' }}
+                width={1242}
+                height={1266}
+                className="absolute inset-y-0 right-0 h-full w-auto max-w-[calc(100%+2.5rem)] object-contain object-bottom drop-shadow-2xl"
               />
             </div>
           </div>

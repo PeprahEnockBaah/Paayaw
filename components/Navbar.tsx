@@ -9,12 +9,22 @@ import SocialIcons from '@/components/SocialIcons'
 type NavItem = { label: string; href: string; children?: { label: string; href: string }[] }
 
 const navItems: NavItem[] = [
-  { label: 'About Us', href: '/about-us' },
-  { label: 'What We Do', href: '/what-we-do' },
+  {
+    label: 'About Us',
+    href: '/about-us',
+    // Add How It Began (#how-it-began) and Leadership (#leadership) back here when
+    // those sections are shown again on the About page.
+    children: [
+      { label: 'The Prophet', href: '/about-us#prophet' },
+      { label: 'Statements of Faith', href: '/about-us#faith' },
+      { label: 'What We Do', href: '/what-we-do' },
+    ],
+  },
   { label: 'Events', href: '/events' },
   { label: 'Resources', href: '/resources' },
   { label: 'Media', href: '/media' },
   { label: 'Contact Us', href: '/contact' },
+  { label: 'Book the Prophet', href: '/book-the-prophet' },
 ]
 
 const getInvolved: NavItem = {
@@ -38,7 +48,15 @@ function Chevron({ open }: { open: boolean }) {
   )
 }
 
-function Dropdown({ items, align = 'left' }: { items: { label: string; href: string }[]; align?: 'left' | 'right' }) {
+function Dropdown({
+  items,
+  align = 'left',
+  onNavigate,
+}: {
+  items: { label: string; href: string }[]
+  align?: 'left' | 'right'
+  onNavigate: () => void
+}) {
   return (
     <div
       className={`absolute top-full ${align === 'right' ? 'right-0' : 'left-0'} mt-3 w-56 rounded-xl overflow-hidden bg-white shadow-xl z-50 border border-brand-main/10`}
@@ -47,6 +65,7 @@ function Dropdown({ items, align = 'left' }: { items: { label: string; href: str
         <Link
           key={child.href}
           href={child.href}
+          onClick={onNavigate}
           className="block px-5 py-3 text-[15px] font-semibold text-brand-main hover:bg-brand-pale transition-colors border-b border-brand-main/5 last:border-0"
         >
           {child.label}
@@ -88,7 +107,19 @@ export default function Navbar() {
   }, [])
 
   const toggle = (label: string) => setOpenDropdown(openDropdown === label ? null : label)
+  // Close the menus when a link is picked. Needed for links within the same page (e.g. switching
+  // About Us tabs), where the page address doesn't change and so the menus wouldn't close by themselves.
+  const closeMenus = () => {
+    setOpenDropdown(null)
+    setMobileOpen(false)
+    setMobileExpanded(null)
+  }
   const isActive = (href: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href))
+  // A menu with a dropdown is shown as current when you're on any of its pages (e.g. What We Do under About Us).
+  const isItemActive = (item: NavItem) =>
+    isActive(item.href) || !!item.children?.some((c) => isActive(c.href.split('#')[0]))
+  // The current page's link turns gold (the darker gold, so it reads on white).
+  const activeClass = 'text-gold-dark'
 
   // The admin page has its own header.
   if (pathname.startsWith('/admin')) return null
@@ -115,37 +146,37 @@ export default function Navbar() {
             {/* Logo */}
             <Link href="/" className="flex-shrink-0">
               <Image
-                src="/images/logo-green.png"
+                src="/images/logo-gpm.png"
                 alt="Gideon Peprah Ministries"
-                width={1131}
-                height={400}
+                width={642}
+                height={376}
                 priority
-                className={`w-auto transition-all duration-300 ${scrolled ? 'h-14' : 'h-16 sm:h-20'}`}
+                className={`w-auto transition-all duration-300 ${scrolled ? 'h-16' : 'h-20 sm:h-24'}`}
               />
             </Link>
 
             {/* Desktop Nav */}
-            <ul className="hidden lg:flex items-center gap-1">
+            <ul className="hidden lg:flex items-center gap-0 xl:gap-1">
               {navItems.map((item) => (
                 <li key={item.label} className="relative">
                   {item.children ? (
                     <>
                       <button
                         onClick={() => toggle(item.label)}
-                        className={`flex items-center gap-1 px-3 py-2 text-[16px] font-semibold transition-colors ${
-                          isActive(item.href) ? 'text-brand-dark' : 'text-brand-main hover:text-brand-dark'
+                        className={`flex items-center gap-1 px-2 xl:px-3 py-2 text-[15px] xl:text-[16px] font-bold whitespace-nowrap transition-colors ${
+                          isItemActive(item) ? activeClass : 'text-brand-main hover:text-brand-dark'
                         }`}
                       >
                         {item.label}
                         <Chevron open={openDropdown === item.label} />
                       </button>
-                      {openDropdown === item.label && <Dropdown items={item.children} />}
+                      {openDropdown === item.label && <Dropdown items={item.children} onNavigate={closeMenus} />}
                     </>
                   ) : (
                     <Link
                       href={item.href}
-                      className={`block px-3 py-2 text-[16px] font-semibold transition-colors ${
-                        isActive(item.href) ? 'text-brand-dark underline underline-offset-8 decoration-2 decoration-gold' : 'text-brand-main hover:text-brand-dark'
+                      className={`block px-2 xl:px-3 py-2 text-[15px] xl:text-[16px] font-bold whitespace-nowrap transition-colors ${
+                        isItemActive(item) ? activeClass : 'text-brand-main hover:text-brand-dark'
                       }`}
                     >
                       {item.label}
@@ -153,15 +184,15 @@ export default function Navbar() {
                   )}
                 </li>
               ))}
-              <li className="relative ml-3">
+              <li className="relative ml-2 xl:ml-3">
                 <button
                   onClick={() => toggle(getInvolved.label)}
-                  className="flex items-center gap-1.5 px-6 py-3 rounded-full bg-gradient-to-b from-gold-light to-gold text-brand-dark shadow-md hover:brightness-105 hover:shadow-lg text-[16px] font-bold transition-all"
+                  className="flex items-center gap-1.5 px-4 xl:px-6 py-3 rounded-full whitespace-nowrap bg-gradient-to-b from-gold-light to-gold text-brand-dark shadow-md hover:brightness-105 hover:shadow-lg text-[15px] xl:text-[16px] font-bold transition-all"
                 >
                   {getInvolved.label}
                   <Chevron open={openDropdown === getInvolved.label} />
                 </button>
-                {openDropdown === getInvolved.label && <Dropdown items={getInvolved.children!} align="right" />}
+                {openDropdown === getInvolved.label && <Dropdown items={getInvolved.children!} align="right" onNavigate={closeMenus} />}
               </li>
             </ul>
 
@@ -197,7 +228,9 @@ export default function Navbar() {
                   <>
                     <button
                       onClick={() => setMobileExpanded(mobileExpanded === item.label ? null : item.label)}
-                      className="flex items-center justify-between w-full px-3 py-3 rounded-lg text-[15px] font-semibold text-brand-main hover:bg-brand-pale transition-colors"
+                      className={`flex items-center justify-between w-full px-3 py-3 rounded-lg text-[15px] font-bold transition-colors ${
+                        isItemActive(item) ? activeClass : 'text-brand-main hover:bg-brand-pale'
+                      }`}
                     >
                       {item.label}
                       <Chevron open={mobileExpanded === item.label} />
@@ -212,6 +245,7 @@ export default function Navbar() {
                           <Link
                             key={child.href}
                             href={child.href}
+                            onClick={closeMenus}
                             className="block py-2.5 text-sm font-semibold text-brand-main/80 hover:text-brand-dark transition-colors"
                           >
                             {child.label}
@@ -223,7 +257,9 @@ export default function Navbar() {
                 ) : (
                   <Link
                     href={item.href}
-                    className="block px-3 py-3 rounded-lg text-[15px] font-semibold text-brand-main hover:bg-brand-pale transition-colors"
+                    className={`block px-3 py-3 rounded-lg text-[15px] font-bold transition-colors ${
+                      isItemActive(item) ? activeClass : 'text-brand-main hover:bg-brand-pale'
+                    }`}
                   >
                     {item.label}
                   </Link>

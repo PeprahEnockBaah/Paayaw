@@ -11,6 +11,7 @@ import SermonsSection from './sermons-section'
 import BooksSection from './books-section'
 import DonationsSection from './donations-section'
 import OrdersSection from './orders-section'
+import ContactSection from './contact-section'
 import Toast from './toast'
 import AdminTabs from './admin-tabs'
 import { adminMessage } from './messages'
@@ -168,6 +169,7 @@ export default async function AdminPage({
           { id: 'events', label: `Events (${events.length})`, content: eventsTab },
           { id: 'orders', label: 'Orders', content: <OrdersSection /> },
           { id: 'donations', label: 'Donations', content: <DonationsSection /> },
+          { id: 'contact', label: 'Contact Details', content: <ContactSection status={searchParams.contact} /> },
         ]}
       />
     </section>
