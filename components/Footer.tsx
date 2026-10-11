@@ -7,7 +7,7 @@ const columns = [
     title: 'About Us',
     links: [
       { label: 'The Prophet', href: '/about-us#prophet' },
-      { label: 'Statements of Faith', href: '/about-us#faith' },
+      { label: 'Tenets of Faith', href: '/about-us#faith' },
       { label: 'What We Do', href: '/what-we-do' },
     ],
   },
@@ -16,7 +16,9 @@ const columns = [
     links: [
       { label: 'Become a Partner', href: '/get-involved' },
       { label: 'Book the Prophet', href: '/book-the-prophet' },
+      { label: '1-on-1 Counselling', href: '/prophetic-insight' },
       { label: 'Give Online', href: '/give' },
+      { label: 'News & Updates', href: '/news' },
       { label: 'Events', href: '/events' },
       { label: 'Resources', href: '/resources' },
       { label: 'VALOR TV', href: '/media#tv' },
@@ -25,10 +27,16 @@ const columns = [
   },
 ]
 
-export default function Footer() {
+const LEADERSHIP_LINK = { label: 'Leadership', href: '/about-us#leadership' }
+
+export default function Footer({ showLeadership = false }: { showLeadership?: boolean }) {
+  // Leadership is listed under About Us once the admin has added leaders.
+  const cols = showLeadership
+    ? columns.map((c) => (c.title === 'About Us' ? { ...c, links: [...c.links.slice(0, 2), LEADERSHIP_LINK, ...c.links.slice(2)] } : c))
+    : columns
   return (
     <footer className="bg-brand-dark text-white/80">
-      <div className="max-w-6xl mx-auto px-6 pt-12 sm:pt-16 pb-8">
+      <div className="page-container pt-12 sm:pt-16 pb-8">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-10 sm:gap-12 mb-12">
 
           {/* Brand */}
@@ -50,12 +58,15 @@ export default function Footer() {
             <SocialIcons className="text-white" />
           </div>
 
-          {columns.map((col) => (
-            <div key={col.title}>
+          {cols.map((col) => {
+            // Long lists (Get Involved) take the full width in two columns on phones.
+            const long = col.links.length > 6
+            return (
+            <div key={col.title} className={long ? 'col-span-2 lg:col-span-1' : ''}>
               <h4 className="font-heading text-sm font-extrabold uppercase tracking-wider mb-5 text-white">
                 {col.title}
               </h4>
-              <ul className="space-y-3">
+              <ul className={long ? 'grid grid-cols-2 lg:grid-cols-1 gap-x-8 gap-y-3' : 'space-y-3'}>
                 {col.links.map((l) => (
                   <li key={l.href}>
                     <Link href={l.href} className="text-sm hover:text-white transition-colors duration-200">
@@ -65,7 +76,8 @@ export default function Footer() {
                 ))}
               </ul>
             </div>
-          ))}
+            )
+          })}
         </div>
 
         {/* Bottom bar */}

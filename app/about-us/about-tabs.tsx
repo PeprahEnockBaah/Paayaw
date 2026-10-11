@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import PageHeader from '@/components/PageHeader'
 
 export type AboutTab = { id: string; label: string; content: React.ReactNode }
 
@@ -52,15 +53,7 @@ export default function AboutTabs({ tabs }: { tabs: AboutTab[] }) {
 
   return (
     <>
-      <section
-        className="text-white px-6 py-5"
-        style={{ background: 'linear-gradient(160deg, var(--brand-dark) 0%, #0e5a45 100%)' }}
-      >
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <p className="text-xs tracking-[4px] uppercase font-bold mb-1.5" style={{ color: 'var(--gold-light)' }}>Our Story</p>
-            <h1 className="font-heading text-3xl lg:text-4xl font-bold">About Us</h1>
-          </div>
+      <PageHeader eyebrow="Our Story" title="About Us">
           <div role="tablist" aria-label="About us sections" className="flex flex-wrap gap-2">
             {tabs.map((t) => (
               <button
@@ -81,9 +74,7 @@ export default function AboutTabs({ tabs }: { tabs: AboutTab[] }) {
               </button>
             ))}
           </div>
-        </div>
-      </section>
-      <div className="gold-bar" />
+      </PageHeader>
 
       {tabs.map((t) => (
         <div key={t.id} id={`panel-${t.id}`} role="tabpanel" aria-labelledby={`tab-${t.id}`} hidden={active !== t.id} className="tab-fade">

@@ -1,8 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { useEffect, useState, useRef, useCallback } from 'react'
+import PageHeader from '@/components/PageHeader'
 
 interface Video {
   id: string
@@ -123,24 +123,11 @@ export default function MediaPage() {
 
   return (
     <>
-      {/* Header: a designed banner with the title built in, shown whole (never cropped). */}
-      <section className="bg-brand-dark">
-        <h1 className="sr-only">Media</h1>
-        <Image
-          src="/images/banners/media.jpg"
-          alt="Media – Watch, Listen, Be Transformed: sermons, prophetic teachings and conferences"
-          width={1280}
-          height={320}
-          priority
-          sizes="100vw"
-          className="w-full h-auto"
-        />
-      </section>
-      <div className="gold-bar" />
+      <PageHeader eyebrow="Watch, Listen, Be Transformed" title="Media" description="Sermons, prophetic teachings and conferences from Prophet Gideon Peprah and VALOR TV." />
 
       {/* Main */}
       <section className="bg-white min-h-[60vh]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+        <div className="page-container py-10">
           {loading ? (
             <div className="flex items-center justify-center py-32">
               <div className="text-center">

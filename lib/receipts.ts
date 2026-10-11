@@ -6,15 +6,19 @@ import { formatMoney, givingTypeLabel } from './giving'
 import { PICKUP_LOCATION } from './order-settings'
 import type { BookOrder } from './orders'
 import type { Donation } from './donations'
+import type { InsightRequest } from './insight-requests'
+import { formatAnticipated } from './insight-settings'
 
 const money = (minor: number, currency: string) => esc(formatMoney(minor / 100, currency))
 const nl2br = (text: string) => esc(text).replace(/\n/g, '<br>')
+
+type Table = 'book_orders' | 'donations' | 'insight_requests'
 
 /**
  * Mark a paid row as emailed and return it, or null if it was already emailed (or isn't paid).
  * Doing this in one update means the webhook and thank-you page can't both send.
  */
-async function claim<T>(table: 'book_orders' | 'donations', reference: string): Promise<T | null> {
+async function claim<T>(table: Table, reference: string): Promise<T | null> {
   const { data, error } = await supabaseAdmin()
     .from(table)
     .update({ emailed_at: new Date().toISOString() })
@@ -30,11 +34,11 @@ async function claim<T>(table: 'book_orders' | 'donations', reference: string): 
 }
 
 /** Let a later confirmation try again if nothing could be sent. */
-async function unclaim(table: 'book_orders' | 'donations', reference: string) {
+async function unclaim(table: Table, reference: string) {
   await supabaseAdmin().from(table).update({ emailed_at: null }).eq('reference', reference)
 }
 
-async function sendAll(table: 'book_orders' | 'donations', reference: string, sends: Promise<boolean>[]) {
+async function sendAll(table: Table, reference: string, sends: Promise<boolean>[]) {
   const results = await Promise.all(sends)
   if (!results.some(Boolean)) await unclaim(table, reference)
 }
@@ -162,5 +166,64 @@ export async function sendDonationEmails(reference: string) {
     await sendAll('donations', reference, [toDonor, toProphet])
   } catch (e) {
     console.error('Donation emails failed', reference, e)
+  }
+}
+
+// ── Prophetic Insight requests ───────────────────────────────
+
+export async function sendInsightEmails(reference: string) {
+  if (!isEmailConfigured()) return
+  try {
+    const r = await claim<InsightRequest>('insight_requests', reference)
+    if (!r) return
+
+    const charged = money(r.amount_minor, r.currency)
+    // Show what they chose too, if it was converted (e.g. EUR charged as USD).
+    const seed =
+      r.chosen_currency && r.chosen_amount_minor && r.chosen_currency !== r.currency
+        ? `${money(r.chosen_amount_minor, r.chosen_currency)} (charged as ${charged})`
+        : charged
+    const rows = detailRows([
+      ['Request', esc(r.request_type)],
+      ['Name', esc(r.name)],
+      ['Email', esc(r.email)],
+      ['Phone', esc(r.phone)],
+      ['Country', esc(r.country)],
+      ['Anticipated date', esc(formatAnticipated(r.preferred_date))],
+      ['Seed', seed],
+      ['Reference', esc(r.reference)],
+    ])
+
+    const toRequester = sendEmail({
+      to: r.email,
+      subject: `We received your ${r.request_type.toLowerCase()} request`,
+      replyTo: process.env.EMAIL_REPLY_TO || undefined,
+      html: emailLayout({
+        heading: 'Your request has been received',
+        intro: `Dear ${esc(r.name)}, thank you for your seed. Your request for <strong>${esc(r.request_type.toLowerCase())}</strong> has been passed on to Prophet Gideon Peprah, and our team will contact you on ${esc(r.phone)} or by email.`,
+        body: detailTable(rows),
+        footer: 'We’ll confirm the date and time with you. God bless you. Keep this email as your receipt.',
+      }),
+    })
+
+    const admin = prophetEmails()
+    const adminLink = siteUrl() ? `<a href="${siteUrl()}/admin#insight" style="color:#0e5a45">Open Prophetic Insight in the admin</a>` : ''
+    const toProphet = admin.length
+      ? sendEmail({
+          to: admin,
+          subject: `Prophetic Insight request: ${r.request_type} from ${r.name}`,
+          replyTo: r.email,
+          html: emailLayout({
+            heading: 'New Prophetic Insight request',
+            intro: `${esc(r.name)} has sown a seed of ${seed} and is asking for <strong>${esc(r.request_type.toLowerCase())}</strong>.`,
+            body: detailTable(rows),
+            footer: `${adminLink}${adminLink ? '<br>' : ''}Reply to this email to answer them directly.`,
+          }),
+        })
+      : Promise.resolve(false)
+
+    await sendAll('insight_requests', reference, [toRequester, toProphet])
+  } catch (e) {
+    console.error('Insight request emails failed', reference, e)
   }
 }

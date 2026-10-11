@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import EventImage from './event-image'
 import { getEvents, splitDate } from '@/lib/events'
+import PageHeader from '@/components/PageHeader'
 
 export const metadata = { title: 'Events – Gideon Peprah Ministries' }
 export const dynamic = 'force-dynamic'
@@ -10,21 +11,9 @@ export default async function EventsPage() {
 
   return (
     <>
-      <section
-        className="relative flex items-center justify-center text-white text-center px-6 py-10 min-h-[208px] sm:min-h-[260px] lg:min-h-[336px]"
-        style={{ background: 'linear-gradient(160deg, var(--brand-dark) 0%, #0e5a45 100%)' }}
-      >
-        <div className="relative z-10">
-          <p className="text-xs tracking-[4px] uppercase font-bold mb-4" style={{ color: 'var(--gold-light)' }}>
-            What's Coming Up
-          </p>
-          <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold mb-4">Events</h1>
-          <div className="w-16 h-1 mx-auto" style={{ background: 'var(--brand-soft)' }} />
-        </div>
-      </section>
-      <div className="gold-bar" />
+      <PageHeader eyebrow="What's Coming Up" title="Events" />
 
-      <section className="max-w-7xl mx-auto px-6 py-14 sm:py-20">
+      <section className="page-container py-14 sm:py-20">
         {events.length === 0 ? (
           <div className="text-center py-16">
             <h3 className="font-heading text-2xl font-bold mb-3" style={{ color: 'var(--brand-dark)' }}>
@@ -58,15 +47,15 @@ export default async function EventsPage() {
                     )}
                     <h3 className="font-heading font-bold text-lg mt-1 mb-2" style={{ color: 'var(--brand-dark)' }}>{e.title}</h3>
                     {(e.location || e.time) && (
-                      <div className="space-y-0.5 mb-2 text-xs" style={{ color: '#66736d' }}>
+                      <div className="space-y-0.5 mb-2 text-sm" style={{ color: '#66736d' }}>
                         {e.location && <p>📍 {e.location}</p>}
                         {e.time && <p>🕐 {e.time}</p>}
                       </div>
                     )}
                     {e.description && (
-                      <p className="text-xs leading-relaxed mb-4" style={{ color: '#66736d' }}>{e.description}</p>
+                      <p className="text-sm leading-relaxed mb-4" style={{ color: '#66736d' }}>{e.description}</p>
                     )}
-                    <Link href="/contact" className="mt-auto text-xs font-bold" style={{ color: 'var(--brand-main)' }}>
+                    <Link href="/contact" className="mt-auto text-sm font-bold" style={{ color: 'var(--brand-main)' }}>
                       Register / Learn More →
                     </Link>
                   </div>
@@ -83,7 +72,7 @@ export default async function EventsPage() {
           <p className="text-sm mb-6" style={{ color: '#66736d' }}>
             Subscribe to our newsletter to stay informed about upcoming events, services, and ministry updates.
           </p>
-          <Link href="/contact" className="btn-primary">Contact Us to Stay Connected</Link>
+          <Link href="/contact" className="btn-primary">Stay Connected</Link>
         </div>
       </section>
     </>

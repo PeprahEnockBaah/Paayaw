@@ -12,11 +12,11 @@ const navItems: NavItem[] = [
   {
     label: 'About Us',
     href: '/about-us',
-    // Add How It Began (#how-it-began) and Leadership (#leadership) back here when
-    // those sections are shown again on the About page.
+    // Add How It Began (#how-it-began) back here when it's shown again on the About page.
+    // Leadership is added below when the admin has added leaders.
     children: [
       { label: 'The Prophet', href: '/about-us#prophet' },
-      { label: 'Statements of Faith', href: '/about-us#faith' },
+      { label: 'Tenets of Faith', href: '/about-us#faith' },
       { label: 'What We Do', href: '/what-we-do' },
     ],
   },
@@ -24,7 +24,15 @@ const navItems: NavItem[] = [
   { label: 'Resources', href: '/resources' },
   { label: 'Media', href: '/media' },
   { label: 'Contact Us', href: '/contact' },
-  { label: 'Book the Prophet', href: '/book-the-prophet' },
+  {
+    label: 'Book the Prophet',
+    href: '/book-the-prophet',
+    // A dropdown rather than two links, so the desktop menu still fits on a laptop screen.
+    children: [
+      { label: 'Invite to Minister', href: '/book-the-prophet' },
+      { label: '1-on-1 Counselling', href: '/prophetic-insight' },
+    ],
+  },
 ]
 
 const getInvolved: NavItem = {
@@ -75,7 +83,20 @@ function Dropdown({
   )
 }
 
-export default function Navbar() {
+const LEADERSHIP_LINK = { label: 'Leadership', href: '/about-us#leadership' }
+
+/** The menu, with Leadership under About Us when there are leaders to show. */
+function menuItems(showLeadership: boolean): NavItem[] {
+  if (!showLeadership) return navItems
+  return navItems.map((item) =>
+    item.href === '/about-us' && item.children
+      ? { ...item, children: [...item.children.slice(0, 2), LEADERSHIP_LINK, ...item.children.slice(2)] }
+      : item
+  )
+}
+
+export default function Navbar({ showLeadership = false }: { showLeadership?: boolean }) {
+  const items = menuItems(showLeadership)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null)
@@ -157,7 +178,7 @@ export default function Navbar() {
 
             {/* Desktop Nav */}
             <ul className="hidden lg:flex items-center gap-0 xl:gap-1">
-              {navItems.map((item) => (
+              {items.map((item) => (
                 <li key={item.label} className="relative">
                   {item.children ? (
                     <>
@@ -222,7 +243,7 @@ export default function Navbar() {
           }`}
         >
           <div className="px-4 py-3 space-y-1 border-t border-brand-main/10">
-            {[...navItems, getInvolved].map((item) => (
+            {[...items, getInvolved].map((item) => (
               <div key={item.label}>
                 {item.children ? (
                   <>

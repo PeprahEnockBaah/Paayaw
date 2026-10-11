@@ -1,9 +1,9 @@
 import FitImage from '@/components/FitImage'
-import Image from 'next/image'
 import Link from 'next/link'
 import { getBooks, getSermons, audiomackEmbedUrl, AUDIOMACK_PROFILE } from '@/lib/resources'
 import { formatMoney } from '@/lib/giving'
 import { orderPath } from '@/lib/order-settings'
+import PageHeader from '@/components/PageHeader'
 
 export const metadata = { title: 'Resources – Gideon Peprah Ministries' }
 
@@ -16,20 +16,10 @@ export default async function ResourcesPage() {
 
   return (
     <>
-      <section className="relative flex items-center justify-center text-white text-center px-6 py-10 min-h-[208px] sm:min-h-[260px] lg:min-h-[336px] overflow-hidden bg-brand-dark">
-        {/* Banner photo, tinted dark green so the title stays readable. */}
-        <Image src="/images/banners/resources.jpg" alt="" fill priority sizes="100vw" className="object-cover" />
-        <div className="absolute inset-0 bg-brand-dark/45" aria-hidden />
-        <div className="relative z-10">
-          <p className="text-xs tracking-[4px] uppercase font-bold mb-4" style={{ color: 'var(--gold-light)' }}>Grow Your Faith</p>
-          <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold mb-4">Resources</h1>
-          <div className="w-16 h-1 mx-auto" style={{ background: 'var(--brand-soft)' }} />
-        </div>
-      </section>
-      <div className="gold-bar" />
+      <PageHeader eyebrow="Grow Your Faith" title="Resources" />
 
       {/* Books */}
-      <section className="max-w-7xl mx-auto px-6 py-14 sm:py-20">
+      <section className="page-container py-14 sm:py-20">
         <div className="text-center mb-12">
           <h2 className="section-title">Books &amp; Devotionals</h2>
           <div className="title-underline" />
@@ -66,9 +56,9 @@ export default async function ResourcesPage() {
                     b.title
                   )}
                 </h3>
-                <p className="text-xs leading-relaxed mb-4" style={{ color: '#66736d' }}>{b.description}</p>
+                <p className="text-sm leading-relaxed mb-4" style={{ color: '#66736d' }}>{b.description}</p>
                 {b.price_minor ? (
-                  <Link href={orderPath(b.id)} className="inline-flex items-center gap-2 text-xs font-bold" style={{ color: 'var(--brand-main)' }}>
+                  <Link href={orderPath(b.id)} className="inline-flex items-center gap-2 text-sm font-bold" style={{ color: 'var(--brand-main)' }}>
                     Order Now · {formatMoney(b.price_minor / 100, 'GHS')} →
                   </Link>
                 ) : b.link_url ? (
@@ -76,13 +66,13 @@ export default async function ResourcesPage() {
                     href={b.link_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs font-bold"
+                    className="text-sm font-bold"
                     style={{ color: 'var(--brand-main)' }}
                   >
                     Get a Copy →
                   </a>
                 ) : (
-                  <Link href="/contact" className="text-xs font-bold" style={{ color: 'var(--brand-main)' }}>
+                  <Link href="/contact" className="text-sm font-bold" style={{ color: 'var(--brand-main)' }}>
                     Request a Copy →
                   </Link>
                 )}
@@ -127,7 +117,7 @@ export default async function ResourcesPage() {
       </section>
 
       {/* Bible Study */}
-      <section className="max-w-7xl mx-auto px-6 py-14 sm:py-20 text-center">
+      <section className="page-container py-14 sm:py-20 text-center">
         <h2 className="section-title mb-4">Bible Study Guides</h2>
         <div className="title-underline mb-6" />
         <p className="max-w-xl mx-auto mb-10 leading-relaxed" style={{ color: '#4f5d57' }}>

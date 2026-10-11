@@ -75,6 +75,57 @@ select * from (values
 where not exists (select 1 from public.slides);
 
 -- ============================================================
+-- Homepage "Stay Updated": news & updates
+-- Safe to run again, like the sections above. The homepage shows
+-- the first 4 (lower position = first); /news shows them all.
+-- ============================================================
+
+create table if not exists public.news (
+  id          uuid primary key default gen_random_uuid(),
+  created_at  timestamptz not null default now(),
+  title       text not null,
+  news_date   date not null,
+  image_url   text not null,
+  body        text not null default '',
+  link_url    text,
+  position    integer not null default 0
+);
+
+alter table public.news enable row level security;
+
+-- Public storage bucket for uploaded news images
+insert into storage.buckets (id, name, public)
+values ('news-images', 'news-images', true)
+on conflict (id) do nothing;
+
+
+-- ============================================================
+-- About Us: Leadership
+-- Edited from /admin. The Leadership tab and menu link show
+-- only when there is at least one leader.
+-- ============================================================
+
+create table if not exists public.leaders (
+  id          uuid primary key default gen_random_uuid(),
+  created_at  timestamptz not null default now(),
+  name        text not null,
+  role        text not null,
+  image_url   text not null,
+  position    integer not null default 0
+);
+
+alter table public.leaders enable row level security;
+
+-- Public storage bucket for uploaded leader photos
+insert into storage.buckets (id, name, public)
+values ('leader-images', 'leader-images', true)
+on conflict (id) do nothing;
+
+-- Leadership (left side) or Staff (right side) on the About Us page.
+alter table public.leaders add column if not exists team text not null default 'Leadership'
+  check (team in ('Leadership', 'Staff'));
+
+-- ============================================================
 -- Resources page: audio sermons and books
 -- Safe to run again, like the sections above.
 -- ============================================================
@@ -223,6 +274,46 @@ alter table public.donations   add column if not exists emailed_at timestamptz;
 alter table public.book_orders add column if not exists emailed_at timestamptz;
 
 -- ============================================================
+-- Prophetic Insight requests (Paystack)
+-- Counselling / destiny requests, recorded as 'pending' when the
+-- person is sent to Paystack to sow their seed. The request is
+-- emailed to the Prophet only once the payment is confirmed.
+-- responded_at is set from the admin page once it's answered.
+-- ============================================================
+
+create table if not exists public.insight_requests (
+  id            uuid primary key default gen_random_uuid(),
+  created_at    timestamptz not null default now(),
+  reference     text not null unique,
+  request_type  text not null,
+  amount_minor  integer not null check (amount_minor > 0),
+  currency      text not null default 'GHS',
+  name          text not null,
+  email         text not null,
+  phone         text not null,
+  country       text,
+  details       text not null,
+  status        text not null default 'pending',
+  channel       text,
+  paid_at       timestamptz,
+  responded_at  timestamptz,
+  emailed_at    timestamptz
+);
+
+create index if not exists insight_requests_created_at on public.insight_requests (created_at desc);
+
+-- The form now asks for an anticipated date instead of a written request.
+alter table public.insight_requests add column if not exists preferred_date date;
+alter table public.insight_requests alter column details drop not null;
+
+-- The seed can be given in any of the Give page's currencies. What the person chose is kept
+-- here; amount_minor / currency are what Paystack charged (converted if needed).
+alter table public.insight_requests add column if not exists chosen_amount_minor integer;
+alter table public.insight_requests add column if not exists chosen_currency     text;
+
+alter table public.insight_requests enable row level security;
+
+-- ============================================================
 -- Website settings edited from /admin
 -- One row per setting (e.g. contact_phone). Missing rows mean
 -- the website uses its built-in value.
@@ -236,3 +327,34 @@ create table if not exists public.site_settings (
 );
 
 alter table public.site_settings enable row level security;
+
+-- ============================================================
+-- About Us: Tenets of Faith
+-- Edited from /admin. The built-in tenets are copied in once
+-- (remembered in site_settings), so running this file again
+-- never brings back tenets the admin has removed.
+-- ============================================================
+
+create table if not exists public.tenets (
+  id          uuid primary key default gen_random_uuid(),
+  created_at  timestamptz not null default now(),
+  title       text not null,
+  body        text not null,
+  position    integer not null default 0
+);
+
+alter table public.tenets enable row level security;
+
+insert into public.tenets (title, body, position)
+select * from (values
+  ('The Bible',       'We believe the Holy Bible is the inspired, infallible Word of God and the supreme authority in all matters of faith and conduct.', 1),
+  ('The Trinity',     'We believe in one God, eternally existing in three persons: Father, Son, and Holy Spirit.', 2),
+  ('Jesus Christ',    'We believe in the deity of our Lord Jesus Christ, His virgin birth, sinless life, atoning death, bodily resurrection, and His imminent return.', 3),
+  ('Salvation',       'We believe that salvation is by grace through faith in Jesus Christ alone, and that all who repent and believe shall receive eternal life.', 4),
+  ('The Holy Spirit', 'We believe in the present ministry of the Holy Spirit, who empowers believers for life and service.', 5),
+  ('The Church',      'We believe in the universal Church, the Body of Christ, and the importance of Christian fellowship, worship, and discipleship.', 6)
+) as seed(title, body, position)
+where not exists (select 1 from public.site_settings where key = 'tenets_seeded')
+  and not exists (select 1 from public.tenets);
+
+insert into public.site_settings (key, value) values ('tenets_seeded', '1') on conflict (key) do nothing;

@@ -7,10 +7,14 @@ import LoginForm from './login-form'
 import EventForm from './event-form'
 import ConfirmDelete from './confirm-delete'
 import SliderSection from './slider-section'
+import NewsSection from './news-section'
+import LeadersSection from './leaders-section'
+import TenetsSection from './tenets-section'
 import SermonsSection from './sermons-section'
 import BooksSection from './books-section'
 import DonationsSection from './donations-section'
 import OrdersSection from './orders-section'
+import InsightSection from './insight-section'
 import ContactSection from './contact-section'
 import Toast from './toast'
 import AdminTabs from './admin-tabs'
@@ -164,10 +168,14 @@ export default async function AdminPage({
       <AdminTabs
         tabs={[
           { id: 'slider', label: 'Slider', content: <SliderSection status={searchParams.slide} /> },
+          { id: 'news', label: 'News & Updates', content: <NewsSection status={searchParams.news} /> },
           { id: 'sermons', label: 'Sermons', content: <SermonsSection status={searchParams.sermon} /> },
           { id: 'books', label: 'Books', content: <BooksSection status={searchParams.book} /> },
           { id: 'events', label: `Events (${events.length})`, content: eventsTab },
+          { id: 'tenets', label: 'Tenets of Faith', content: <TenetsSection status={searchParams.tenet} /> },
+          { id: 'leadership', label: 'Leadership', content: <LeadersSection status={searchParams.leader} /> },
           { id: 'orders', label: 'Orders', content: <OrdersSection /> },
+          { id: 'insight', label: 'Prophetic Insight', content: <InsightSection /> },
           { id: 'donations', label: 'Donations', content: <DonationsSection /> },
           { id: 'contact', label: 'Contact Details', content: <ContactSection status={searchParams.contact} /> },
         ]}

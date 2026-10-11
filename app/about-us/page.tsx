@@ -1,47 +1,53 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import AboutTabs, { type AboutTab } from './about-tabs'
+import { getLeaders, LEADER_GROUPS } from '@/lib/leaders'
+import { getTenets } from '@/lib/tenets'
 
 export const metadata = { title: 'About Us – Gideon Peprah Ministries' }
 
-const leaders = [
-  { name: 'Elder Samuel Asante', role: 'Chairman, Governing Council', img: '/images/V_168.jpg' },
-  { name: 'Mrs. Grace Boateng', role: 'Vice Chair', img: '/images/V_106.jpg' },
-  { name: 'Deacon James Mensah', role: 'Secretary', img: '/images/V_107.jpg' },
-  { name: 'Dr. Abena Osei', role: 'Treasurer', img: '/images/V_108.jpg' },
-]
+// Re-check at most once a minute; admin changes to Leadership and Tenets also refresh it immediately.
+export const revalidate = 60
 
-const beliefs = [
-  { title: 'The Bible', body: 'We believe the Holy Bible is the inspired, infallible Word of God and the supreme authority in all matters of faith and conduct.' },
-  { title: 'The Trinity', body: 'We believe in one God, eternally existing in three persons: Father, Son, and Holy Spirit.' },
-  { title: 'Jesus Christ', body: 'We believe in the deity of our Lord Jesus Christ, His virgin birth, sinless life, atoning death, bodily resurrection, and His imminent return.' },
-  { title: 'Salvation', body: 'We believe that salvation is by grace through faith in Jesus Christ alone, and that all who repent and believe shall receive eternal life.' },
-  { title: 'The Holy Spirit', body: 'We believe in the present ministry of the Holy Spirit, who empowers believers for life and service.' },
-  { title: 'The Church', body: 'We believe in the universal Church, the Body of Christ, and the importance of Christian fellowship, worship, and discipleship.' },
-]
 
-// Only The Prophet and Statements of Faith are shown for now. Set to true to bring back
-// How It Began and Leadership (as extra tabs).
-const SHOW_FULL_ABOUT = false
+// How It Began is hidden for now. Set to true to bring it back as an extra tab.
+// (Leadership is edited from /admin and shows by itself once a leader is added.)
+const SHOW_HOW_IT_BEGAN = false
 
-// Each section is a tab. Statements of Faith fits on one laptop screen; The Prophet has room to read.
-export default function AboutPage() {
+// Each section is a tab. Tenets of Faith fits on one laptop screen; The Prophet has room to read.
+export default async function AboutPage() {
+  const [leaders, tenets] = await Promise.all([getLeaders(), getTenets()])
   // Not squeezed to one screen: the bio gets room to read, with the photo as tall as the text.
   const prophet = (
-    <section className="max-w-6xl mx-auto px-4 sm:px-6 py-10 lg:py-14">
-      {/* Desktop: the photo stretches to the full height of the bio, so the two line up. */}
-      <div className="grid grid-cols-1 lg:grid-cols-[5fr_6fr] xl:grid-cols-2 gap-10 xl:gap-14">
-        <div className="relative flex justify-center lg:block">
+    // Clips the photo where it reaches the edge of the screen on desktop.
+    <div className="overflow-x-clip">
+    <section className="page-container py-10 lg:py-14">
+      {/* Desktop: bio on the left; the photo on the right is as tall as the bio, its top level with the heading,
+          and may grow past the column into the empty space up to the screen edge. Phones: photo first, above the bio. */}
+      <div className="grid grid-cols-1 lg:grid-cols-[6fr_5fr] xl:grid-cols-2 gap-10 xl:gap-14">
+        <div className="relative flex justify-center lg:block lg:order-2">
           <Image
-            src="/images/prophet.png"
+            src="/images/prophet-cutout.png"
             alt="Prophet Gideon Peprah"
-            width={1242}
-            height={1266}
+            width={916}
+            height={1254}
             priority
-            className="w-full max-w-md h-auto mx-auto drop-shadow-2xl lg:absolute lg:inset-y-0 lg:right-0 lg:h-full lg:w-auto lg:max-w-[calc(100%+3rem)] lg:mx-0 object-contain object-top xl:object-bottom"
+            className="lg:hidden w-full max-w-xs sm:max-w-sm h-auto drop-shadow-2xl"
           />
+          <div
+            className="hidden lg:block absolute inset-y-0 left-0"
+            style={{ right: 'calc(-1 * (max(0px, (100vw - 72rem) / 2) + 0.5rem))' }}
+          >
+            <Image
+              src="/images/prophet-cutout.png"
+              alt="Prophet Gideon Peprah"
+              fill
+              sizes="50vw"
+              className="object-contain object-left-top drop-shadow-2xl"
+            />
+          </div>
         </div>
-        <div>
+        <div className="lg:order-1">
           <h2 className="font-heading text-3xl font-bold mb-2 text-brand-main normal-case">Prophet Gideon Peprah</h2>
           <p className="text-sm font-bold tracking-widest uppercase mb-6 text-brand-main">Founder &amp; President, GPM</p>
           <div className="space-y-3.5 text-[15px] leading-[1.75] text-ink-muted">
@@ -54,13 +60,17 @@ export default function AboutPage() {
         </div>
       </div>
     </section>
+    </div>
   )
 
   const faith = (
-    <section className="bg-paper px-4 sm:px-6 py-6">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {beliefs.map((f) => (
-          <div key={f.title} className="bg-white rounded-xl p-5 shadow-sm border-l-4" style={{ borderColor: 'var(--gold)' }}>
+    <section className="bg-paper py-6">
+      <div className="page-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {tenets.length === 0 && (
+          <p className="text-ink-muted md:col-span-2 lg:col-span-3 text-center py-6">Our tenets of faith will be published here soon.</p>
+        )}
+        {tenets.map((f) => (
+          <div key={f.id} className="bg-white rounded-xl p-5 shadow-sm border-l-4" style={{ borderColor: 'var(--gold)' }}>
             <h3 className="font-heading font-bold text-lg mb-1.5 text-brand-main">{f.title}</h3>
             <p className="text-sm leading-relaxed text-ink-muted">{f.body}</p>
           </div>
@@ -70,7 +80,7 @@ export default function AboutPage() {
   )
 
   const howItBegan = (
-    <section className="max-w-6xl mx-auto px-6 py-8">
+    <section className="page-container py-8">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         <div className="space-y-4 leading-[1.85] text-ink-muted">
           <p>Gideon Peprah Ministries (GPM) was founded out of a deep conviction to mobilise the Body of Christ and position God's people for the imminent return of our Lord Jesus Christ.</p>
@@ -90,21 +100,32 @@ export default function AboutPage() {
     </section>
   )
 
+  // Leadership on the left, Staff on the right (stacked on phones). A group with no one in it is left out.
+  const groups = LEADER_GROUPS.map((g) => ({ title: g, people: leaders.filter((l) => l.team === g) })).filter((g) => g.people.length)
   const leadership = (
-    <section className="py-8 px-6 bg-brand-main">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        {leaders.map((l) => (
-          <div key={l.name} className="text-center">
-            <Image
-              src={l.img}
-              alt={l.name}
-              width={200}
-              height={200}
-              className="w-28 h-28 rounded-full mx-auto mb-4 object-cover object-top"
-              style={{ border: '3px solid var(--gold)' }}
-            />
-            <h4 className="font-bold text-white text-base">{l.name}</h4>
-            <p className="text-sm mt-1" style={{ color: 'var(--gold-light)' }}>{l.role}</p>
+    <section className="py-8 bg-brand-main">
+      <div className={`page-container grid grid-cols-1 gap-10 ${groups.length > 1 ? 'lg:grid-cols-2 lg:gap-0 lg:divide-x lg:divide-white/20' : ''}`}>
+        {groups.map((g) => (
+          <div key={g.title} className={groups.length > 1 ? 'lg:px-8 first:lg:pl-0 last:lg:pr-0' : ''}>
+            <h3 className="font-heading text-2xl font-extrabold text-center mb-6" style={{ color: 'var(--gold-light)' }}>
+              {g.title}
+            </h3>
+            <div className={`grid grid-cols-2 gap-x-6 gap-y-8 ${groups.length > 1 ? '' : 'sm:grid-cols-3 lg:grid-cols-4'}`}>
+              {g.people.map((l) => (
+                <div key={l.id} className="text-center">
+                  <Image
+                    src={l.image_url}
+                    alt={l.name}
+                    width={200}
+                    height={200}
+                    className="w-28 h-28 rounded-full mx-auto mb-4 object-cover object-top"
+                    style={{ border: '3px solid var(--gold)' }}
+                  />
+                  <h4 className="font-bold text-white text-base">{l.name}</h4>
+                  <p className="text-sm mt-1" style={{ color: 'var(--gold-light)' }}>{l.role}</p>
+                </div>
+              ))}
+            </div>
           </div>
         ))}
       </div>
@@ -113,13 +134,9 @@ export default function AboutPage() {
 
   const tabs: AboutTab[] = [
     { id: 'prophet', label: 'The Prophet', content: prophet },
-    { id: 'faith', label: 'Statements of Faith', content: faith },
-    ...(SHOW_FULL_ABOUT
-      ? [
-          { id: 'how-it-began', label: 'How It Began', content: howItBegan },
-          { id: 'leadership', label: 'Leadership', content: leadership },
-        ]
-      : []),
+    { id: 'faith', label: 'Tenets of Faith', content: faith },
+    ...(SHOW_HOW_IT_BEGAN ? [{ id: 'how-it-began', label: 'How It Began', content: howItBegan }] : []),
+    ...(leaders.length ? [{ id: 'leadership', label: 'Leadership', content: leadership }] : []),
   ]
 
   return <AboutTabs tabs={tabs} />

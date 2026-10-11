@@ -3,6 +3,7 @@ import FitImage from '@/components/FitImage'
 import { getOrderableBooks } from '@/lib/resources'
 import { formatMoney } from '@/lib/giving'
 import { orderPath } from '@/lib/order-settings'
+import PageHeader from '@/components/PageHeader'
 
 export const metadata = {
   title: 'Order Books – Gideon Peprah Ministries',
@@ -17,21 +18,9 @@ export default async function OrderPage() {
 
   return (
     <>
-      <section
-        className="relative flex items-center justify-center text-white text-center px-6 py-10 min-h-[208px] sm:min-h-[260px] lg:min-h-[336px]"
-        style={{ background: 'linear-gradient(160deg, var(--brand-dark) 0%, #0e5a45 100%)' }}
-      >
-        <div className="relative z-10">
-          <p className="text-xs tracking-[4px] uppercase font-bold mb-4" style={{ color: 'var(--gold-light)' }}>
-            Books &amp; Devotionals
-          </p>
-          <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold mb-4">Order a Copy</h1>
-          <div className="w-16 h-1 mx-auto" style={{ background: 'var(--brand-soft)' }} />
-        </div>
-      </section>
-      <div className="gold-bar" />
+      <PageHeader eyebrow="Books & Devotionals" title="Order a Copy" />
 
-      <section className="max-w-6xl mx-auto px-6 py-14 sm:py-20">
+      <section className="page-container py-14 sm:py-20">
         {books.length === 0 ? (
           <div className="text-center max-w-md mx-auto">
             <p className="text-ink-muted mb-6">No books are available to order online right now.</p>
@@ -54,7 +43,7 @@ export default async function OrderPage() {
                 <div className="p-5 flex flex-col flex-1">
                   <span className="text-[10px] font-bold tracking-widest uppercase text-brand-main">{b.category}</span>
                   <h3 className="font-heading font-bold text-lg mt-1 mb-2 text-brand-dark">{b.title}</h3>
-                  <p className="text-xs leading-relaxed mb-4 text-ink-muted flex-1">{b.description}</p>
+                  <p className="text-sm leading-relaxed mb-4 text-ink-muted flex-1">{b.description}</p>
                   <div className="flex items-center justify-between gap-3">
                     <span className="font-heading text-xl font-extrabold text-brand-main">
                       {formatMoney(b.price_minor! / 100, 'GHS')}

@@ -1,50 +1,14 @@
+import { getLatestFullVideos } from '@/lib/youtube'
+
+/** How many of the channel's latest full-length videos (no Shorts) the Media page shows. */
+const MEDIA_VIDEO_COUNT = 6
+
 export async function GET() {
   try {
-    const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY
-    const CHANNEL_ID = process.env.YOUTUBE_CHANNEL_ID
-
-    if (!YOUTUBE_API_KEY || !CHANNEL_ID) {
-      return Response.json(
-        { error: 'YouTube API configuration missing' },
-        { status: 500 }
-      )
-    }
-
-    // Fetch uploads playlist ID
-    const channelResponse = await fetch(
-      `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${CHANNEL_ID}&key=${YOUTUBE_API_KEY}`
-    )
-    const channelData = await channelResponse.json()
-
-    if (!channelData.items?.[0]) {
-      return Response.json(
-        { error: 'Channel not found' },
-        { status: 404 }
-      )
-    }
-
-    const uploadsPlaylistId = channelData.items[0].contentDetails.relatedPlaylists.uploads
-
-    // Fetch latest videos from uploads playlist
-    const videosResponse = await fetch(
-      `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&playlistId=${uploadsPlaylistId}&maxResults=24&key=${YOUTUBE_API_KEY}`
-    )
-    const videosData = await videosResponse.json()
-
-    const videos = videosData.items?.map((item: any) => ({
-      id: item.contentDetails.videoId,
-      title: item.snippet.title,
-      thumbnail: item.snippet.thumbnails.high.url,
-      publishedAt: item.snippet.publishedAt,
-      channelName: item.snippet.channelTitle,
-    })) || []
-
-    return Response.json({ videos })
+    return Response.json({ videos: await getLatestFullVideos(MEDIA_VIDEO_COUNT) })
   } catch (error) {
     console.error('YouTube API error:', error)
-    return Response.json(
-      { error: 'Failed to fetch videos' },
-      { status: 500 }
-    )
+    const missing = error instanceof Error && error.message === 'YouTube API configuration missing'
+    return Response.json({ error: missing ? error.message : 'Failed to fetch videos' }, { status: 500 })
   }
 }

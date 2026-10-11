@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import { getLeaders } from '@/lib/leaders'
 
 export const metadata: Metadata = {
   title: 'Gideon Peprah Ministries – Interpreting Destinies',
@@ -12,17 +13,20 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  // The About Us menu shows Leadership only once the admin has added a leader.
+  const showLeadership = (await getLeaders()).length > 0
+
   return (
     <html lang="en">
       <body className="bg-white text-ink">
-        <Navbar />
+        <Navbar showLeadership={showLeadership} />
         <main>{children}</main>
-        <Footer />
+        <Footer showLeadership={showLeadership} />
       </body>
     </html>
   )

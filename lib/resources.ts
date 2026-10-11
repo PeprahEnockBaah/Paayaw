@@ -21,6 +21,8 @@ export type Book = {
   /** Price in pesewas; books with a price can be ordered on /order. */
   price_minor?: number | null
   position: number
+  /** When it was uploaded (missing on the built-in books). */
+  created_at?: string
 }
 
 /**
@@ -93,6 +95,14 @@ export async function getSermons() {
 export async function getBooks() {
   const rows = await getBookRows()
   return rows && rows.length > 0 ? rows : DEFAULT_BOOKS
+}
+
+/** The most recently uploaded book in a category (e.g. for the homepage), or null if there are none. */
+export function latestBook(books: Book[], category: string): Book | null {
+  const inCategory = books.filter((b) => b.category === category)
+  if (!inCategory.length) return null
+  // Built-in books have no upload time; then the first in display order is used.
+  return inCategory.reduce((latest, b) => ((b.created_at || '') > (latest.created_at || '') ? b : latest))
 }
 
 /** Books that can be ordered on the website (those with a price), in display order. */

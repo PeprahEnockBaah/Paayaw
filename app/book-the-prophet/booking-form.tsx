@@ -27,7 +27,7 @@ function SubmitButton() {
       disabled={pending}
       className="w-full h-11 px-8 rounded-full font-bold text-lg bg-gradient-to-b from-gold-light to-gold text-brand-dark shadow-md hover:brightness-105 hover:shadow-lg transition-all disabled:opacity-70"
     >
-      {pending ? 'Sending…' : 'Send Request'}
+      {pending ? 'Sending…' : 'Send'}
     </button>
   )
 }

@@ -4,6 +4,7 @@ import OtherWaysDialog from './other-ways-dialog'
 import { isPaystackTestMode } from '@/lib/paystack'
 import { chargeableCurrencies, getRatesPerUsd } from '@/lib/fx'
 import { BANK_DETAILS, MOMO_DETAILS, hasBankDetails, hasMomoDetails } from '@/lib/giving-details'
+import PageHeader from '@/components/PageHeader'
 
 export const metadata = {
   title: 'Give – Gideon Peprah Ministries',
@@ -39,20 +40,21 @@ export default async function GivePage() {
   ]
 
   return (
-    <section className="bg-paper px-4 sm:px-6 py-4">
-      <div className="max-w-6xl mx-auto">
+    <>
+    <PageHeader
+      eyebrow="Partner With Us"
+      title="Give"
+      description={
+        <>
+          Partner with us to advance the Mission. <span className="italic">&ldquo;God loves a cheerful giver.&rdquo;</span>{' '}
+          <span className="font-semibold" style={{ color: 'var(--gold-light)' }}>2 Cor 9:7</span>
+        </>
+      }
+    />
+    <section className="bg-paper pt-4 pb-10 sm:py-4">
+      <div className="page-container">
           <GiveForm
             testMode={isPaystackTestMode()}
-            header={
-              <>
-                <h1 className="font-heading text-3xl lg:text-4xl font-extrabold text-brand-main leading-none">Give</h1>
-                <p className="text-sm text-ink-muted mt-1.5">
-                  Partner with us to advance the Mission.{' '}
-                  <span className="italic text-brand-dark">&ldquo;God loves a cheerful giver.&rdquo;</span>{' '}
-                  <span className="font-semibold text-brand-main">2 Cor 9:7</span>
-                </p>
-              </>
-            }
             chargeable={chargeableCurrencies()}
             ratesPerUsd={ratesPerUsd}
             footer={
@@ -70,5 +72,6 @@ export default async function GivePage() {
 
       </div>
     </section>
+    </>
   )
 }

@@ -18,8 +18,8 @@ export default async function OrderBookPage({ params }: { params: { id: string }
   if (!book) notFound()
 
   return (
-    <section className="bg-paper px-4 sm:px-6 py-8 sm:py-12">
-      <div className="max-w-5xl mx-auto">
+    <section className="bg-paper py-8 sm:py-12">
+      <div className="page-container">
         <Link href="/order" className="inline-block text-sm font-semibold text-brand-main mb-5 hover:text-brand-dark">
           ← All books
         </Link>

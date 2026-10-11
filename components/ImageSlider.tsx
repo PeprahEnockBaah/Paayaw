@@ -103,7 +103,7 @@ export default function ImageSlider({
                   aria-hidden
                   fill
                   sizes="96px"
-                  className="object-cover scale-125 blur-2xl brightness-75 lg:hidden"
+                  className="object-cover scale-125 blur-2xl brightness-90 lg:hidden"
                 />
               )}
               <Image
@@ -133,8 +133,8 @@ export default function ImageSlider({
               aria-hidden={!isActive}
               tabIndex={isActive ? 0 : -1}
               onFocus={() => setIsAutoPlay(false)}
-              className="absolute left-1/2 bottom-12 sm:bottom-16 z-20 inline-flex items-center gap-2
-                px-5 py-2.5 sm:px-7 sm:py-3 rounded-full font-bold text-sm sm:text-base whitespace-nowrap
+              className="absolute left-1/2 bottom-10 sm:bottom-16 z-20 inline-flex items-center gap-2
+                px-5 py-2 sm:px-7 sm:py-3 rounded-full font-bold text-sm sm:text-base whitespace-nowrap
                 bg-gradient-to-b from-gold-light to-gold text-brand-dark shadow-lg ring-2 ring-white/70
                 hover:brightness-105 hover:shadow-xl transition-all duration-500"
               style={{

@@ -13,6 +13,31 @@ export const SLIDE_MESSAGES: Table = {
   badlink: [false, 'The button link isn’t a valid web address. Use a full link (e.g. amazon.com/…) or a page on this site (e.g. /resources).'],
 }
 
+export const NEWS_MESSAGES: Table = {
+  added: [true, 'Update added to the top of the list.'],
+  updated: [true, 'Update saved.'],
+  deleted: [true, 'Update removed.'],
+  missing: [false, 'Please enter a headline and date (and choose an image for new updates).'],
+  badlink: [false, 'The “Read more” link isn’t a valid web address. Use a full link or a page on this site (e.g. /media).'],
+  error: [false, 'Could not save the update. Please try again.'],
+}
+
+export const TENET_MESSAGES: Table = {
+  added: [true, 'Tenet added to the end of the list.'],
+  updated: [true, 'Tenet updated.'],
+  deleted: [true, 'Tenet removed.'],
+  missing: [false, 'Please enter a title and what we believe.'],
+  error: [false, 'Could not save the tenet. Please try again.'],
+}
+
+export const LEADER_MESSAGES: Table = {
+  added: [true, 'Added to the end of the list.'],
+  updated: [true, 'Saved.'],
+  deleted: [true, 'Removed.'],
+  missing: [false, 'Please enter a name and role (and choose a photo for new people).'],
+  error: [false, 'Could not save. Please try again.'],
+}
+
 export const SERMON_MESSAGES: Table = {
   added: [true, 'Sermon added to the top of the list.'],
   updated: [true, 'Sermon updated.'],
@@ -38,6 +63,12 @@ export const ORDER_MESSAGES: Table = {
   error: [false, 'Could not update the order. Please try again.'],
 }
 
+export const INSIGHT_MESSAGES: Table = {
+  responded: [true, 'Request marked as answered.'],
+  reopened: [true, 'Request moved back to “To answer”.'],
+  error: [false, 'Could not update the request. Please try again.'],
+}
+
 export const EVENT_MESSAGES: Table = {
   added: [true, 'Event added.'],
   updated: [true, 'Event updated.'],
@@ -53,7 +84,7 @@ export const CONTACT_MESSAGES: Table = {
   error: [false, 'Could not save the contact details. Please try again.'],
 }
 
-const MOVED: Record<string, string> = { slides: 'Slide', sermons: 'Sermon', books: 'Book' }
+const MOVED: Record<string, string> = { slides: 'Slide', news: 'Update', leaders: 'Person', tenets: 'Tenet', sermons: 'Sermon', books: 'Book' }
 
 const pick = (table: Table, key?: string): AdminMessage | null =>
   key && table[key] ? { ok: table[key][0], text: table[key][1] } : null
@@ -66,9 +97,13 @@ export function adminMessage(sp: Record<string, string | undefined>): AdminMessa
   }
   return (
     pick(SLIDE_MESSAGES, sp.slide) ||
+    pick(NEWS_MESSAGES, sp.news) ||
+    pick(LEADER_MESSAGES, sp.leader) ||
+    pick(TENET_MESSAGES, sp.tenet) ||
     pick(SERMON_MESSAGES, sp.sermon) ||
     pick(BOOK_MESSAGES, sp.book) ||
     pick(ORDER_MESSAGES, sp.order) ||
+    pick(INSIGHT_MESSAGES, sp.insight) ||
     pick(CONTACT_MESSAGES, sp.contact) ||
     pick(EVENT_MESSAGES, sp.added ? 'added' : sp.updated ? 'updated' : sp.deleted ? 'deleted' : undefined) ||
     // Event errors use ?error=save / ?error=missing (?error=1 / locked are login errors, shown on the login form).

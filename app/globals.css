@@ -42,6 +42,11 @@ body {
 }
 
 @layer components {
+  /* Page content width and side padding — the same as the menu bar, so content lines up with the logo. */
+  .page-container {
+    @apply max-w-6xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
   .btn-primary {
     /* Metallic gold, like the pills on the ministry's flyers. */
     @apply inline-block bg-gradient-to-b from-gold-light to-gold text-brand-dark font-bold px-8 py-3.5 rounded-full transition-all duration-300 hover:brightness-105 hover:-translate-y-0.5 shadow-md hover:shadow-lg;

@@ -108,7 +108,7 @@ export default function GiveForm({
       <input type="hidden" name="currency" value={currency} />
 
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 mb-3 lg:mb-4">
-        <div className="min-w-0">{header}</div>
+        {header && <div className="min-w-0">{header}</div>}
         <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
           <span id="currency-label" className="text-sm font-bold text-brand-dark">
             Give in:
@@ -132,7 +132,7 @@ export default function GiveForm({
                 }`}
               >
                 <span className="block text-sm font-extrabold">{CURRENCIES[c].short}</span>
-                <span className={`block text-[10px] font-semibold ${currency === c ? 'text-white/85' : 'text-ink-soft'}`}>
+                <span className={`block text-xs font-semibold ${currency === c ? 'text-white/85' : 'text-ink-soft'}`}>
                   {CURRENCIES[c].label}
                 </span>
               </button>
@@ -249,7 +249,7 @@ export default function GiveForm({
                 <input name="name" autoComplete="name" className={`${inputClass} ${border(f.name)}`} aria-invalid={!!f.name} />
                 <FieldError msg={f.name} />
               </label>
-              <div className="grid grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               <label className="block">
                 <Label>Email (for receipt)</Label>
                 <input
@@ -306,9 +306,9 @@ export default function GiveForm({
             </p>
           )}
           <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
-            <span className="text-[11px] text-ink-soft mr-0.5">Secure checkout by Paystack:</span>
+            <span className="text-xs text-ink-soft mr-0.5">Secure checkout by Paystack:</span>
             {PAY_OPTIONS.map((o) => (
-              <span key={o} className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-brand-pale text-brand-dark">
+              <span key={o} className="text-xs font-semibold px-2 py-0.5 rounded-full bg-brand-pale text-brand-dark">
                 {o}
               </span>
             ))}

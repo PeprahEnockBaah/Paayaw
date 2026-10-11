@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { isValidWebhookSignature, verifyTransaction } from '@/lib/paystack'
 import { isDonationReference, saveVerifiedTransaction } from '@/lib/donations'
 import { isOrderReference, saveVerifiedOrder } from '@/lib/orders'
+import { isInsightReference, saveVerifiedInsightRequest } from '@/lib/insight-requests'
 
 /**
  * Paystack calls this after every payment, even if the donor closes their browser
@@ -22,14 +23,17 @@ export async function POST(req: Request) {
   }
 
   const reference = event.data?.reference
-  // Only payments made on this website: gifts ("GPM-…") and book orders ("GPMB-…").
+  // Only payments made on this website: gifts ("GPM-…"), book orders ("GPMB-…") and
+  // Prophetic Insight requests ("GPMI-…").
   const isGift = !!reference && isDonationReference(reference)
   const isOrder = !!reference && isOrderReference(reference)
-  if (event.event === 'charge.success' && reference && (isGift || isOrder)) {
+  const isInsight = !!reference && isInsightReference(reference)
+  if (event.event === 'charge.success' && reference && (isGift || isOrder || isInsight)) {
     try {
       // Re-check with Paystack rather than trusting the payload alone.
       const tx = await verifyTransaction(reference)
       if (isOrder) await saveVerifiedOrder(tx)
+      else if (isInsight) await saveVerifiedInsightRequest(tx)
       else await saveVerifiedTransaction(tx, event.data?.metadata)
     } catch (e) {
       console.error('Webhook: could not verify or save', reference, e)

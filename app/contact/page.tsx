@@ -1,6 +1,7 @@
 import { socialLinks } from '@/components/SocialIcons'
 import ContactForm from './contact-form'
 import { getContactInfo } from '@/lib/contact-info'
+import PageHeader from '@/components/PageHeader'
 
 export const metadata = { title: 'Contact Us – Gideon Peprah Ministries' }
 
@@ -19,25 +20,14 @@ export default async function ContactPage() {
 
   return (
     <>
-      <section
-        className="text-white px-6 py-5"
-        style={{ background: 'linear-gradient(160deg, var(--brand-dark) 0%, #0e5a45 100%)' }}
-      >
-        <div className="max-w-6xl mx-auto flex flex-col lg:flex-row lg:items-center gap-3 lg:gap-10">
-          <div className="flex-shrink-0">
-            <p className="text-xs tracking-[4px] uppercase font-bold mb-1.5" style={{ color: 'var(--gold-light)' }}>Get In Touch</p>
-            <h1 className="font-heading text-3xl lg:text-4xl font-bold">Contact Us</h1>
-          </div>
-          <p className="text-sm lg:text-[15px] leading-relaxed text-white/85 lg:border-l-2 lg:border-gold lg:pl-6">
-            Whether you have a prayer request, want to partner with us, or simply want to know more about GPM,
-            we are here for you. Send us a message or reach us through any of the channels below.
-          </p>
-        </div>
-      </section>
-      <div className="gold-bar" />
+      <PageHeader
+        eyebrow="Get In Touch"
+        title="Contact Us"
+        description="Whether you have a prayer request, want to partner with us, or simply want to know more about GPM, we are here for you. Send us a message or reach us through any of the channels below."
+      />
 
-      <section className="bg-paper px-4 sm:px-6 py-5">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-6 lg:gap-8">
+      <section className="bg-paper pt-5 pb-10 sm:py-5">
+        <div className="page-container grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-6 lg:gap-8">
 
           {/* Contact details */}
           <div className="flex flex-col gap-5">
@@ -71,7 +61,7 @@ export default async function ContactPage() {
                     href={s.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-4 py-2 rounded-full text-xs font-bold transition-colors text-white bg-brand-dark hover:bg-brand-main"
+                    className="px-3 sm:px-4 py-2 rounded-full text-xs font-bold transition-colors text-white bg-brand-dark hover:bg-brand-main"
                   >
                     {s.label}
                   </a>

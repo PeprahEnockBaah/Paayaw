@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import PageHeader from '@/components/PageHeader'
 
 export const metadata = { title: 'Get Involved – Gideon Peprah Ministries' }
 
@@ -13,26 +14,14 @@ const tiers = [
 export default function GetInvolvedPage() {
   return (
     <>
-      <section
-        className="text-white px-6 py-5"
-        style={{ background: 'linear-gradient(160deg, var(--brand-dark) 0%, #0e5a45 100%)' }}
-      >
-        <div className="max-w-6xl mx-auto flex flex-col lg:flex-row lg:items-center gap-3 lg:gap-10">
-          <div className="flex-shrink-0">
-            <p className="text-xs tracking-[4px] uppercase font-bold mb-1.5" style={{ color: 'var(--gold-light)' }}>Join the Movement</p>
-            <h1 className="font-heading text-3xl lg:text-4xl font-bold">Get Involved</h1>
-          </div>
-          <p className="text-sm leading-relaxed text-white/85 lg:border-l-2 lg:border-gold lg:pl-6">
-            Partnership is at the heart of what we do. When you become a GPM partner, you are not just giving
-            financially — you are joining us in prayer, in vision, and in the great commission. Your faithful support
-            enables us to preach the Gospel, plant churches, support communities, and disciple the nations.
-          </p>
-        </div>
-      </section>
-      <div className="gold-bar" />
+      <PageHeader
+        eyebrow="Join the Movement"
+        title="Get Involved"
+        description="Partnership is at the heart of what we do. When you become a GPM partner, you are not just giving financially — you are joining us in prayer, in vision, and in the great commission. Your faithful support enables us to preach the Gospel, plant churches, support communities, and disciple the nations."
+      />
 
-      <section className="bg-paper px-4 sm:px-6 py-4">
-        <div className="max-w-6xl mx-auto">
+      <section className="bg-paper py-4">
+        <div className="page-container">
 
           {/* Become a Partner */}
           <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 mb-2">
@@ -59,7 +48,7 @@ export default function GetInvolvedPage() {
                       </li>
                     ))}
                   </ul>
-                  <Link href="/contact" className="text-xs font-bold tracking-wide text-brand-main hover:text-brand-dark whitespace-nowrap">
+                  <Link href="/contact" className="inline-flex items-center py-2 -my-2 text-sm font-bold tracking-wide text-brand-main hover:text-brand-dark whitespace-nowrap">
                     Sign Up →
                   </Link>
                 </div>

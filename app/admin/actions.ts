@@ -10,6 +10,8 @@ import { MAX_ATTEMPTS, visitorKey, recentFailures, recordFailure, clearFailures 
 import { SLIDER_IMAGES_BUCKET } from '@/lib/slides'
 import { BOOK_IMAGES_BUCKET, BOOK_CATEGORIES, normalizeAudiomackUrl } from '@/lib/resources'
 import { contactInfoRows } from '@/lib/contact-info'
+import { NEWS_IMAGES_BUCKET } from '@/lib/news'
+import { LEADER_IMAGES_BUCKET, isLeaderGroup } from '@/lib/leaders'
 
 export async function login(formData: FormData) {
   const key = visitorKey()
@@ -140,6 +142,9 @@ const isImage = (f: File | null): f is File => !!f && f.size > 0 && f.type.start
 // Tables whose items can be reordered, with the page and admin section to refresh.
 const ORDERED = {
   slides: { page: '/', section: 'slider' },
+  news: { page: '/', section: 'news' },
+  leaders: { page: '/about-us', section: 'leadership' },
+  tenets: { page: '/about-us', section: 'tenets' },
   sermons: { page: '/resources', section: 'sermons' },
   books: { page: '/resources', section: 'books' },
 } as const
@@ -148,7 +153,15 @@ type OrderedTable = keyof typeof ORDERED
 function refresh(table: OrderedTable) {
   revalidatePath(ORDERED[table].page)
   // Book titles, covers and prices also appear on the order pages.
-  if (table === 'books') revalidatePath('/order', 'layout')
+  if (table === 'books') {
+    revalidatePath('/order', 'layout')
+    // The homepage shows the latest book and devotional.
+    revalidatePath('/')
+  }
+  // Updates also have their own pages.
+  if (table === 'news') revalidatePath('/news', 'layout')
+  // The menu's Leadership link (on every page) shows only when there are leaders.
+  if (table === 'leaders') revalidatePath('/', 'layout')
   revalidatePath('/admin')
 }
 
@@ -163,10 +176,15 @@ export async function moveItem(formData: FormData) {
   const supabase = supabaseAdmin()
   const { data } = await supabase
     .from(table)
-    .select('id, position')
+    .select(table === 'leaders' ? 'id, position, team' : 'id, position')
     .order('position', { ascending: true })
     .order('created_at', { ascending: true })
-  const rows = data ?? []
+  let rows = ((data ?? []) as unknown as { id: string; position: number; team?: string }[])
+  // Leadership and Staff are listed separately, so a leader only moves within their own group.
+  if (table === 'leaders') {
+    const team = rows.find((r) => r.id === id)?.team
+    rows = rows.filter((r) => r.team === team)
+  }
 
   const from = rows.findIndex((r) => r.id === id)
   const to = from + step
@@ -329,6 +347,186 @@ export async function deleteBook(formData: FormData) {
   redirect('/admin?book=deleted#books')
 }
 
+// ── News & updates ───────────────────────────────────────────
+
+/** An update's fields from the form; redirects back with an error if something is wrong. */
+function newsFields(formData: FormData) {
+  const title = String(formData.get('title') || '').trim().slice(0, 200)
+  const news_date = String(formData.get('news_date') || '')
+  const body = String(formData.get('body') || '').trim().slice(0, 10_000)
+  const linkInput = String(formData.get('link_url') || '').trim()
+  if (!title || !/^\d{4}-\d{2}-\d{2}$/.test(news_date)) redirect('/admin?news=missing#news')
+  const link_url = !linkInput ? null : linkInput.startsWith('/') ? linkInput : normalizeLink(linkInput)
+  if (linkInput && !link_url) redirect('/admin?news=badlink#news')
+  return { title, news_date, body, link_url }
+}
+
+export async function createNews(formData: FormData) {
+  if (!isAuthed()) redirect('/admin')
+  const fields = newsFields(formData)
+  const image = formData.get('image') as File | null
+  if (!isImage(image)) redirect('/admin?news=missing#news')
+
+  const supabase = supabaseAdmin()
+  const uploaded = await uploadImage(supabase, NEWS_IMAGES_BUCKET, image)
+  if (!uploaded) redirect('/admin?news=error#news')
+
+  const position = await topPosition(supabase, 'news')
+  const { error } = await supabase.from('news').insert({ ...fields, image_url: uploaded.url, position })
+  if (error) {
+    await supabase.storage.from(NEWS_IMAGES_BUCKET).remove([uploaded.path])
+    redirect('/admin?news=error#news')
+  }
+
+  refresh('news')
+  redirect('/admin?news=added#news')
+}
+
+export async function updateNews(formData: FormData) {
+  if (!isAuthed()) redirect('/admin')
+  const id = String(formData.get('id') || '')
+  if (!id) redirect('/admin#news')
+  const fields = newsFields(formData)
+
+  const supabase = supabaseAdmin()
+  const image_url = await replaceImage(supabase, NEWS_IMAGES_BUCKET, formData, String(formData.get('image_url') || ''))
+  if (!image_url) redirect('/admin?news=error#news')
+
+  const { error } = await supabase.from('news').update({ ...fields, image_url }).eq('id', id)
+  if (error) redirect('/admin?news=error#news')
+
+  refresh('news')
+  redirect('/admin?news=updated#news')
+}
+
+export async function deleteNews(formData: FormData) {
+  if (!isAuthed()) redirect('/admin')
+  const id = String(formData.get('id') || '')
+  if (!id) redirect('/admin#news')
+
+  const supabase = supabaseAdmin()
+  await removeImage(supabase, NEWS_IMAGES_BUCKET, String(formData.get('image_url') || ''))
+  await supabase.from('news').delete().eq('id', id)
+
+  refresh('news')
+  redirect('/admin?news=deleted#news')
+}
+
+// ── Tenets of Faith ──────────────────────────────────────────
+
+function tenetFields(formData: FormData) {
+  const title = String(formData.get('title') || '').trim().slice(0, 100)
+  const body = String(formData.get('body') || '').trim().slice(0, 1000)
+  if (!title || !body) redirect('/admin?tenet=missing#tenets')
+  return { title, body }
+}
+
+export async function createTenet(formData: FormData) {
+  if (!isAuthed()) redirect('/admin')
+  const fields = tenetFields(formData)
+
+  // New tenets go to the end of the list.
+  const supabase = supabaseAdmin()
+  const { data } = await supabase.from('tenets').select('position').order('position', { ascending: false }).limit(1)
+  const { error } = await supabase.from('tenets').insert({ ...fields, position: (data?.[0]?.position ?? 0) + 1 })
+  if (error) redirect('/admin?tenet=error#tenets')
+
+  refresh('tenets')
+  redirect('/admin?tenet=added#tenets')
+}
+
+export async function updateTenet(formData: FormData) {
+  if (!isAuthed()) redirect('/admin')
+  const id = String(formData.get('id') || '')
+  if (!id) redirect('/admin#tenets')
+  const fields = tenetFields(formData)
+
+  const { error } = await supabaseAdmin().from('tenets').update(fields).eq('id', id)
+  if (error) redirect('/admin?tenet=error#tenets')
+
+  refresh('tenets')
+  redirect('/admin?tenet=updated#tenets')
+}
+
+export async function deleteTenet(formData: FormData) {
+  if (!isAuthed()) redirect('/admin')
+  const id = String(formData.get('id') || '')
+  if (!id) redirect('/admin#tenets')
+
+  await supabaseAdmin().from('tenets').delete().eq('id', id)
+
+  refresh('tenets')
+  redirect('/admin?tenet=deleted#tenets')
+}
+
+// ── Leadership ───────────────────────────────────────────────
+
+function leaderFields(formData: FormData) {
+  const name = String(formData.get('name') || '').trim().slice(0, 100)
+  const role = String(formData.get('role') || '').trim().slice(0, 100)
+  const teamInput = String(formData.get('team') || '')
+  if (!name || !role) redirect('/admin?leader=missing#leadership')
+  return { name, role, team: isLeaderGroup(teamInput) ? teamInput : 'Leadership' }
+}
+
+export async function createLeader(formData: FormData) {
+  if (!isAuthed()) redirect('/admin')
+  const fields = leaderFields(formData)
+  const image = formData.get('image') as File | null
+  if (!isImage(image)) redirect('/admin?leader=missing#leadership')
+
+  const supabase = supabaseAdmin()
+  const uploaded = await uploadImage(supabase, LEADER_IMAGES_BUCKET, image)
+  if (!uploaded) redirect('/admin?leader=error#leadership')
+
+  // New people go to the end of their group, since the list is usually in order of rank.
+  const { data } = await supabase
+    .from('leaders')
+    .select('position')
+    .eq('team', fields.team)
+    .order('position', { ascending: false })
+    .limit(1)
+  const position = (data?.[0]?.position ?? 0) + 1
+  const { error } = await supabase.from('leaders').insert({ ...fields, image_url: uploaded.url, position })
+  if (error) {
+    await supabase.storage.from(LEADER_IMAGES_BUCKET).remove([uploaded.path])
+    redirect('/admin?leader=error#leadership')
+  }
+
+  refresh('leaders')
+  redirect('/admin?leader=added#leadership')
+}
+
+export async function updateLeader(formData: FormData) {
+  if (!isAuthed()) redirect('/admin')
+  const id = String(formData.get('id') || '')
+  if (!id) redirect('/admin#leadership')
+  const fields = leaderFields(formData)
+
+  const supabase = supabaseAdmin()
+  const image_url = await replaceImage(supabase, LEADER_IMAGES_BUCKET, formData, String(formData.get('image_url') || ''))
+  if (!image_url) redirect('/admin?leader=error#leadership')
+
+  const { error } = await supabase.from('leaders').update({ ...fields, image_url }).eq('id', id)
+  if (error) redirect('/admin?leader=error#leadership')
+
+  refresh('leaders')
+  redirect('/admin?leader=updated#leadership')
+}
+
+export async function deleteLeader(formData: FormData) {
+  if (!isAuthed()) redirect('/admin')
+  const id = String(formData.get('id') || '')
+  if (!id) redirect('/admin#leadership')
+
+  const supabase = supabaseAdmin()
+  await removeImage(supabase, LEADER_IMAGES_BUCKET, String(formData.get('image_url') || ''))
+  await supabase.from('leaders').delete().eq('id', id)
+
+  refresh('leaders')
+  redirect('/admin?leader=deleted#leadership')
+}
+
 // ── Editing ──────────────────────────────────────────────────
 
 /**
@@ -472,6 +670,25 @@ export async function setOrderFulfilled(formData: FormData) {
 
   revalidatePath('/admin')
   redirect(`/admin?order=${fulfilled ? 'fulfilled' : 'reopened'}#orders`)
+}
+
+// ── Prophetic Insight requests ───────────────────────────────
+
+/** Mark a paid Prophetic Insight request as answered (or move it back). */
+export async function setInsightResponded(formData: FormData) {
+  if (!isAuthed()) redirect('/admin')
+  const id = String(formData.get('id') || '')
+  const responded = formData.get('responded') === '1'
+  if (!id) redirect('/admin#insight')
+
+  const { error } = await supabaseAdmin()
+    .from('insight_requests')
+    .update({ responded_at: responded ? new Date().toISOString() : null })
+    .eq('id', id)
+  if (error) redirect('/admin?insight=error#insight')
+
+  revalidatePath('/admin')
+  redirect(`/admin?insight=${responded ? 'responded' : 'reopened'}#insight`)
 }
 
 // ── Contact details ──────────────────────────────────────────

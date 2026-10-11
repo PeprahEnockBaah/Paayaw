@@ -1,5 +1,6 @@
 import FitImage from '@/components/FitImage'
 import Link from 'next/link'
+import PageHeader from '@/components/PageHeader'
 
 export const metadata = { title: 'What We Do – Gideon Peprah Ministries' }
 
@@ -35,19 +36,9 @@ const ministries = [
 export default function WhatWeDoPage() {
   return (
     <>
-      <section
-        className="relative flex items-center justify-center text-white text-center px-6 py-10 min-h-[208px] sm:min-h-[260px] lg:min-h-[336px]"
-        style={{ background: 'linear-gradient(160deg, var(--brand-dark) 0%, #0e5a45 100%)' }}
-      >
-        <div className="relative z-10">
-          <p className="text-xs tracking-[4px] uppercase font-bold mb-4" style={{ color: 'var(--gold-light)' }}>Our Mission in Action</p>
-          <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold mb-4">What We Do</h1>
-          <div className="w-16 h-1 mx-auto" style={{ background: 'var(--brand-soft)' }} />
-        </div>
-      </section>
-      <div className="gold-bar" />
+      <PageHeader eyebrow="Our Mission in Action" title="What We Do" />
 
-      <section className="max-w-7xl mx-auto px-6 py-14 sm:py-20">
+      <section className="page-container py-14 sm:py-20">
         <div className="text-center mb-16 max-w-2xl mx-auto">
           <h2 className="section-title mb-4">The Gospel for Soul and Society</h2>
           <div className="title-underline mb-6" />
@@ -58,16 +49,16 @@ export default function WhatWeDoPage() {
           </p>
         </div>
 
-        <div className="space-y-20">
+        <div className="space-y-12 lg:space-y-20">
           {ministries.map((m, i) => (
-            <div key={m.title} className={`grid grid-cols-1 lg:grid-cols-2 gap-14 items-center ${i % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}
+            <div key={m.title} className={`grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-14 items-center ${i % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}
                  style={{ direction: i % 2 === 1 ? 'rtl' : 'ltr' }}>
               <div style={{ direction: 'ltr' }}>
                 <div className="w-14 h-14 rounded-full flex items-center justify-center text-2xl mb-5"
                      style={{ background: 'var(--brand-pale)' }}>
                   {m.icon}
                 </div>
-                <h3 className="font-heading text-3xl font-bold mb-4" style={{ color: 'var(--brand-dark)' }}>{m.title}</h3>
+                <h3 className="font-heading text-2xl sm:text-3xl font-bold mb-4" style={{ color: 'var(--brand-dark)' }}>{m.title}</h3>
                 <p className="text-base leading-[1.85]" style={{ color: '#4f5d57' }}>{m.body}</p>
               </div>
               <div style={{ direction: 'ltr' }}>

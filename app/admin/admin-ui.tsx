@@ -68,7 +68,7 @@ export function MoveButtons({
   index,
   count,
 }: {
-  table: 'slides' | 'sermons' | 'books'
+  table: 'slides' | 'news' | 'leaders' | 'tenets' | 'sermons' | 'books'
   id: string
   index: number
   count: number

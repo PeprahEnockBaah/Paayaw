@@ -3,34 +3,12 @@ import Image from 'next/image'
 import FitImage from '@/components/FitImage'
 import ImageSlider from '@/components/ImageSlider'
 import { getSlides } from '@/lib/slides'
-import { getSermons, audiomackEmbedUrl } from '@/lib/resources'
-
-const newsItems = [
-  {
-    title: 'A New Place of Worship Established in the Northern Region',
-    date: 'September 2025',
-    img: '/images/V_185.jpg',
-    href: '/media',
-  },
-  {
-    title: 'GPM Renovates Local School to Boost Education in the Community',
-    date: 'June 2025',
-    img: '/images/V_197.jpg',
-    href: '/media',
-  },
-  {
-    title: 'Remember Them — Annual Community Outreach a Great Success',
-    date: 'May 2025',
-    img: '/images/V_61.jpg',
-    href: '/media',
-  },
-  {
-    title: 'Go To Them — GPM Evangelism Campaign Reaches Thousands',
-    date: 'May 2025',
-    img: '/images/V_186.jpg',
-    href: '/media',
-  },
-]
+import { getBooks, getSermons, audiomackEmbedUrl, latestBook, type Book } from '@/lib/resources'
+import { orderPath } from '@/lib/order-settings'
+import { getNews, HOME_NEWS_COUNT } from '@/lib/news'
+import NewsCard from '@/components/NewsCard'
+import ValorTvPlayer from '@/components/ValorTvPlayer'
+import { getLatestVideo } from '@/lib/youtube'
 
 const helpCards = [
   {
@@ -56,13 +34,17 @@ const helpCards = [
   },
 ]
 
-const resources: { label: string; img?: string; audio?: true; href?: string }[] = [
-  { label: 'Books & Teaching Materials', img: '/images/V_184.jpg' },
-  { label: 'Daily Devotionals', img: '/images/V_166.jpg' },
+// Books and devotionals show the latest uploaded cover from the admin (the photo is used if there are none).
+const resources: { label: string; img?: string; audio?: true; href?: string; category?: string }[] = [
+  { label: 'Books & Teaching Materials', img: '/images/V_184.jpg', category: 'Books' },
+  { label: 'Daily Devotionals', img: '/images/V_166.jpg', category: 'Devotionals' },
   // Shows the latest sermon's player instead of a photo.
   { label: 'Audio Sermons', audio: true, href: '/resources#audio-sermons' },
   { label: 'Bible Study Guides', img: '/images/V_205.jpg' },
 ]
+
+/** Priced books open their order page; others open the Resources page. */
+const bookHref = (b: Book) => (b.price_minor ? orderPath(b.id) : '/resources')
 
 function Arrow() {
   return (
@@ -72,11 +54,17 @@ function Arrow() {
   )
 }
 
-// Re-check the slider list at most once a minute; admin changes also refresh it immediately.
+// Re-check the slider and news at most once a minute; admin changes also refresh it immediately.
 export const revalidate = 60
 
 export default async function HomePage() {
-  const [slides, sermons] = await Promise.all([getSlides(), getSermons()])
+  const [slides, sermons, news, books, latestVideo] = await Promise.all([
+    getSlides(),
+    getSermons(),
+    getNews(),
+    getBooks(),
+    getLatestVideo(),
+  ])
   const latestSermon = sermons[0]
 
   return (
@@ -92,7 +80,7 @@ export default async function HomePage() {
       {/* ── INTERPRETING DESTINIES + WELCOME ──
           Kept compact so the whole section fits on one screen below the navbar. */}
       <section className="bg-paper">
-        <div className="max-w-6xl mx-auto px-5 sm:px-6 py-5 sm:py-10 lg:py-6">
+        <div className="page-container py-5 sm:py-10 lg:py-6">
           <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr] gap-8 lg:gap-10 xl:gap-14 items-center">
             {/* Container sizing lets the title shrink to fit its column on one line. */}
             <div className="[container-type:inline-size]">
@@ -161,24 +149,17 @@ export default async function HomePage() {
       </section>
 
       {/* ── VALOR TV ── */}
-      <section className="bg-brand-dark py-14 sm:py-24 px-6 text-center">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="font-heading text-4xl lg:text-5xl font-extrabold text-gold-light mb-4">VALOR TV</h2>
-          <p className="text-white/85 mb-12">Watch our latest broadcasts &amp; teachings</p>
-          <Link
-            href="/media#tv"
-            className="group relative flex items-center justify-center rounded-2xl overflow-hidden shadow-2xl"
-            style={{ aspectRatio: '16/9' }}
-            aria-label="Watch VALOR TV"
-          >
-            <Image src="/images/V_198.jpg" alt="" fill className="object-cover transition-transform duration-500 group-hover:scale-105" sizes="(min-width: 896px) 896px, 100vw" />
-            <div className="absolute inset-0 bg-brand-dark/40" />
-            <div className="relative w-20 h-20 rounded-full bg-white flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110">
-              <svg className="w-9 h-9 ml-1" fill="var(--brand-main)" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z" />
-              </svg>
-            </div>
-          </Link>
+      {/* A green card that hugs the video: slim heading on top and a thin green edge around the video. */}
+      <section className="bg-white py-8 sm:py-12">
+        <div className="page-container">
+        <div className="bg-brand-dark rounded-2xl shadow-xl p-2 sm:p-3">
+          <div className="pt-2 pb-3 sm:pb-4 flex flex-col sm:flex-row sm:items-baseline sm:justify-center gap-x-4 gap-y-1 text-center">
+            <h2 className="font-heading text-3xl lg:text-4xl font-extrabold text-gold-light">VALOR TV</h2>
+            <p className="text-white/85">Watch our latest broadcasts &amp; teachings</p>
+          </div>
+          {/* Plays the latest VALOR TV upload right here. */}
+          <ValorTvPlayer video={latestVideo} />
+        </div>
         </div>
       </section>
 
@@ -186,62 +167,50 @@ export default async function HomePage() {
       <section className="bg-paper py-14 sm:py-24 px-6 text-center">
         <div className="max-w-2xl mx-auto">
           <h2 className="section-title mb-6">Join The GPM Family</h2>
-          <p className="text-lg text-ink-muted max-w-xl mx-auto mb-10 leading-relaxed">
+          <p className="text-base sm:text-lg text-ink-muted max-w-xl mx-auto mb-6 sm:mb-10 leading-relaxed">
             Together we can do great things for the Kingdom of God. Become a partner today and be part of something extraordinary.
           </p>
           <Link href="/get-involved" className="btn-primary">Become a Partner today</Link>
         </div>
       </section>
 
-      {/* ── NEWS ── */}
-      <section className="py-14 sm:py-24 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-14">
+      {/* ── NEWS ── (hidden when the admin has removed every update) */}
+      {news.length > 0 && (
+      <section className="py-14 sm:py-24 bg-white">
+        <div className="page-container">
+          <div className="text-center mb-8 sm:mb-14">
             <h2 className="section-title">Stay Updated</h2>
             <div className="title-underline" />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {newsItems.map((item) => (
-              <Link
-                key={item.title}
-                href={item.href}
-                className="group block bg-white rounded-xl overflow-hidden shadow-md border border-brand-main/10 card-hover"
-              >
-                <FitImage
-                  src={item.img}
-                  alt={item.title}
-                  className="aspect-[3/2]"
-                  imgClassName="transition-transform duration-500 group-hover:scale-105"
-                  sizes="(min-width: 1024px) 280px, (min-width: 640px) 50vw, 100vw"
-                />
-                <div className="p-5">
-                  <p className="text-[11px] font-bold tracking-widest uppercase mb-2 text-brand-main">{item.date}</p>
-                  <h3 className="text-[15px] font-bold leading-snug text-brand-dark group-hover:text-brand-main transition-colors">
-                    {item.title}
-                  </h3>
-                </div>
-              </Link>
-              )
-            )}
+            {news.slice(0, HOME_NEWS_COUNT).map((item) => (
+              <NewsCard key={item.id} item={item} />
+            ))}
           </div>
+          {news.length > HOME_NEWS_COUNT && (
+            <div className="text-center mt-10">
+              <Link href="/news" className="btn-outline-brand">View All Updates</Link>
+            </div>
+          )}
         </div>
       </section>
+      )}
 
       {/* ── HOW MAY WE HELP ── */}
-      <section className="bg-paper py-14 sm:py-24 px-6">
-        <div className="max-w-6xl mx-auto text-center">
+      <section className="bg-paper py-14 sm:py-24">
+        <div className="page-container text-center">
           <h2 className="section-title mb-4">How may we help you today?</h2>
-          <div className="title-underline mb-14" />
+          <div className="title-underline mb-8 sm:mb-14" />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {helpCards.map((card) => (
-              <div key={card.title} className="bg-white rounded-2xl p-10 text-center shadow-sm card-hover">
+              <div key={card.title} className="bg-white rounded-2xl p-6 sm:p-10 text-center shadow-sm card-hover">
                 <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 bg-brand-pale text-brand-main">
                   <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d={card.icon} />
                   </svg>
                 </div>
                 <h3 className="font-heading text-2xl font-extrabold mb-4 text-brand-main">{card.title}</h3>
-                <p className="text-sm leading-[1.8] text-ink-muted mb-8">{card.body}</p>
+                <p className="text-sm leading-[1.8] text-ink-muted mb-5 sm:mb-8">{card.body}</p>
                 <Link
                   href={card.href}
                   className="inline-flex items-center gap-2 text-sm font-bold text-brand-main hover:text-brand-dark transition-all duration-200 hover:gap-3"
@@ -256,9 +225,9 @@ export default async function HomePage() {
       </section>
 
       {/* ── RESOURCES ── */}
-      <section className="bg-white py-14 sm:py-24 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-14">
+      <section className="bg-white py-14 sm:py-24">
+        <div className="page-container">
+          <div className="text-center mb-8 sm:mb-14">
             <h2 className="section-title">Resources</h2>
             <div className="title-underline" />
           </div>
@@ -282,24 +251,28 @@ export default async function HomePage() {
                     {r.label} →
                   </Link>
                 </div>
-              ) : (
-              <Link
-                key={r.label}
-                href={r.href ?? '/resources'}
-                className="group block rounded-xl overflow-hidden shadow-md card-hover"
-              >
-                <FitImage
-                  src={r.img!}
-                  alt={r.label}
-                  className="aspect-[3/2] lg:aspect-auto lg:h-60"
-                  imgClassName="transition-transform duration-500 group-hover:scale-105"
-                  sizes="(min-width: 1024px) 280px, (min-width: 640px) 50vw, 100vw"
-                />
-                <div className="px-4 py-4 text-center text-sm font-bold text-white bg-brand-main">
-                  {r.label}
-                </div>
-              </Link>
-              )
+              ) : (() => {
+                const book = r.category ? latestBook(books, r.category) : null
+                return (
+                  <Link
+                    key={r.label}
+                    href={book ? bookHref(book) : r.href ?? '/resources'}
+                    className="group flex flex-col rounded-xl overflow-hidden shadow-md card-hover"
+                  >
+                    <FitImage
+                      src={book?.image_url ?? r.img!}
+                      alt={book?.title ?? r.label}
+                      className="aspect-[3/2] lg:aspect-auto lg:h-60"
+                      imgClassName="transition-transform duration-500 group-hover:scale-105"
+                      sizes="(min-width: 1024px) 280px, (min-width: 640px) 50vw, 100vw"
+                    />
+                    <div className="mt-auto px-4 py-4 text-center text-white bg-brand-main">
+                      <span className="block text-sm font-bold">{r.label}</span>
+                      {book && <span className="block mt-0.5 text-xs text-white/80 truncate">Latest: {book.title}</span>}
+                    </div>
+                  </Link>
+                )
+              })()
             )}
           </div>
         </div>
