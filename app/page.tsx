@@ -34,14 +34,20 @@ const helpCards = [
   },
 ]
 
-// Books and devotionals show the latest uploaded cover from the admin (the photo is used if there are none).
-const resources: { label: string; img?: string; audio?: true; href?: string; category?: string }[] = [
-  { label: 'Books & Teaching Materials', img: '/images/V_184.jpg', category: 'Books' },
-  { label: 'Daily Devotionals', img: '/images/V_166.jpg', category: 'Devotionals' },
-  // Shows the latest sermon's player instead of a photo.
+// Each tile shows the latest upload from the admin, and is hidden when there are none.
+const resources: { label: string; audio?: true; href?: string; category?: string }[] = [
+  { label: 'Books & Teaching Materials', category: 'Books' },
+  { label: 'Daily Devotionals', category: 'Devotionals' },
+  // Shows the latest sermon's player instead of a cover.
   { label: 'Audio Sermons', audio: true, href: '/resources#audio-sermons' },
-  { label: 'Bible Study Guides', img: '/images/V_205.jpg' },
 ]
+
+// Grid sizing so one or two tiles stay centred instead of leaving empty columns.
+const TILE_GRID: Record<number, string> = {
+  1: 'max-w-sm',
+  2: 'sm:grid-cols-2 max-w-3xl',
+  3: 'sm:grid-cols-2 lg:grid-cols-3',
+}
 
 /** Priced books open their order page; others open the Resources page. */
 const bookHref = (b: Book) => (b.price_minor ? orderPath(b.id) : '/resources')
@@ -66,6 +72,11 @@ export default async function HomePage() {
     getLatestVideo(),
   ])
   const latestSermon = sermons[0]
+  const resourceTiles = resources.flatMap((r): (typeof r & { book: Book | null })[] => {
+    if (r.audio) return latestSermon ? [{ ...r, book: null }] : []
+    const book = r.category ? latestBook(books, r.category) : null
+    return book ? [{ ...r, book }] : []
+  })
 
   return (
     <>
@@ -225,58 +236,57 @@ export default async function HomePage() {
       </section>
 
       {/* ── RESOURCES ── */}
-      <section className="bg-white py-14 sm:py-24">
-        <div className="page-container">
-          <div className="text-center mb-8 sm:mb-14">
-            <h2 className="section-title">Resources</h2>
-            <div className="title-underline" />
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {resources.map((r) =>
-              r.audio ? (
-                // A player can't sit inside a link, so only the label links to the full list.
-                <div key={r.label} className="rounded-xl overflow-hidden shadow-md bg-[#1c1c1c] card-hover flex flex-col">
-                  <iframe
-                    src={audiomackEmbedUrl(latestSermon.audiomack_url)}
-                    title={`${latestSermon.title} – audio sermon by Prophet Gideon Peprah`}
-                    className="block w-full aspect-[3/2] lg:aspect-auto lg:h-60"
-                    loading="lazy"
-                    allow="autoplay"
-                    style={{ border: 0 }}
-                  />
-                  <Link
-                    href={r.href ?? '/resources'}
-                    className="mt-auto px-4 py-4 text-center text-sm font-bold text-white bg-brand-main hover:bg-brand-dark transition-colors"
-                  >
-                    {r.label} →
-                  </Link>
-                </div>
-              ) : (() => {
-                const book = r.category ? latestBook(books, r.category) : null
-                return (
+      {resourceTiles.length > 0 && (
+        <section className="bg-white py-14 sm:py-24">
+          <div className="page-container">
+            <div className="text-center mb-8 sm:mb-14">
+              <h2 className="section-title">Resources</h2>
+              <div className="title-underline" />
+            </div>
+            <div className={`grid grid-cols-1 gap-6 mx-auto ${TILE_GRID[resourceTiles.length]}`}>
+              {resourceTiles.map(({ book, ...r }) =>
+                r.audio ? (
+                  // A player can't sit inside a link, so only the label links to the full list.
+                  <div key={r.label} className="rounded-xl overflow-hidden shadow-md bg-[#1c1c1c] card-hover flex flex-col">
+                    <iframe
+                      src={audiomackEmbedUrl(latestSermon.audiomack_url)}
+                      title={`${latestSermon.title} – audio sermon by Prophet Gideon Peprah`}
+                      className="block w-full aspect-[3/2] lg:aspect-auto lg:h-60"
+                      loading="lazy"
+                      allow="autoplay"
+                      style={{ border: 0 }}
+                    />
+                    <Link
+                      href={r.href ?? '/resources'}
+                      className="mt-auto px-4 py-4 text-center text-sm font-bold text-white bg-brand-main hover:bg-brand-dark transition-colors"
+                    >
+                      {r.label} →
+                    </Link>
+                  </div>
+                ) : book && (
                   <Link
                     key={r.label}
-                    href={book ? bookHref(book) : r.href ?? '/resources'}
+                    href={bookHref(book)}
                     className="group flex flex-col rounded-xl overflow-hidden shadow-md card-hover"
                   >
                     <FitImage
-                      src={book?.image_url ?? r.img!}
-                      alt={book?.title ?? r.label}
+                      src={book.image_url}
+                      alt={book.title}
                       className="aspect-[3/2] lg:aspect-auto lg:h-60"
                       imgClassName="transition-transform duration-500 group-hover:scale-105"
-                      sizes="(min-width: 1024px) 280px, (min-width: 640px) 50vw, 100vw"
+                      sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw"
                     />
                     <div className="mt-auto px-4 py-4 text-center text-white bg-brand-main">
                       <span className="block text-sm font-bold">{r.label}</span>
-                      {book && <span className="block mt-0.5 text-xs text-white/80 truncate">Latest: {book.title}</span>}
+                      <span className="block mt-0.5 text-xs text-white/80 truncate">Latest: {book.title}</span>
                     </div>
                   </Link>
                 )
-              })()
-            )}
+              )}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </>
   )
 }

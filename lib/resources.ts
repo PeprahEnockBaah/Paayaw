@@ -50,7 +50,7 @@ export function audiomackEmbedUrl(audiomackUrl: string) {
   return audiomackUrl.replace('https://audiomack.com/', 'https://audiomack.com/embed/')
 }
 
-/** Built-in content, shown when the database can't be reached or a list is empty. */
+/** Built-in content, shown only when the database can't be reached. */
 export const DEFAULT_SERMONS: Sermon[] = [
   {
     id: 'default-0',
@@ -86,15 +86,17 @@ export const getSermonRows = () => readTable<Sermon>('sermons', 'id, title, audi
 // All columns, so the site keeps working before optional columns (like price) are added.
 export const getBookRows = () => readTable<Book>('books')
 
-/** Lists for the public site, falling back to the built-in content. */
+/**
+ * Lists for the public site in display order (new uploads go to the top).
+ * An empty list stays empty (so deleted items disappear); the built-in
+ * content is only used if the database can't be reached.
+ */
 export async function getSermons() {
-  const rows = await getSermonRows()
-  return rows && rows.length > 0 ? rows : DEFAULT_SERMONS
+  return (await getSermonRows()) ?? DEFAULT_SERMONS
 }
 
 export async function getBooks() {
-  const rows = await getBookRows()
-  return rows && rows.length > 0 ? rows : DEFAULT_BOOKS
+  return (await getBookRows()) ?? DEFAULT_BOOKS
 }
 
 /** The most recently uploaded book in a category (e.g. for the homepage), or null if there are none. */
